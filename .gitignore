@@ -1,0 +1,16 @@
+# 환경 변수 (API 키 노출 방지)
+.env
+.env.local
+.env.*.local
+
+# Python
+venv/
+__pycache__/
+*.pyc
+*.pyo
+
+# IDE
+.idea/
+.vscode/
+*.swp
+*.swo

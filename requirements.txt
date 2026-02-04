@@ -1,0 +1,13 @@
+fastapi
+uvicorn[standard]
+pydantic
+
+# Shopping pipeline
+playwright
+playwright-stealth
+undetected-chromedriver
+replicate
+google-genai
+httpx
+Pillow
+rembg
