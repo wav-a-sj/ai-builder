@@ -11,6 +11,7 @@ import asyncio
 import base64
 import io
 import json
+import os
 import re
 import time
 from typing import Any, Dict, Optional, Tuple
@@ -49,11 +50,12 @@ except ImportError:
 # rembg는 onnxruntime 필요. Python 3.14는 onnxruntime 미지원 → import 시 sys.exit(1)로 크래시하므로 선체크
 try:
     import onnxruntime  # noqa: F401
-    from rembg import remove as rembg_remove
+    from rembg import remove as rembg_remove, new_session as rembg_new_session
     HAS_REMBG = True
 except (ImportError, ModuleNotFoundError):
     HAS_REMBG = False
     rembg_remove = None
+    rembg_new_session = None
 
 
 SYSTEM_INSTRUCTION = (
@@ -418,22 +420,53 @@ async def scrape_naver_product(
     return (None, None)
 
 
+_REMBG_SESSION: Optional[Any] = None
+
+
+def _get_rembg_session():
+    """고품질: bria-rmbg(이커머스 최적) → birefnet-general → isnet. REMBG_QUALITY=balanced 시 가벼운 모델 우선."""
+    global _REMBG_SESSION
+    if _REMBG_SESSION is not None:
+        return _REMBG_SESSION
+    if not rembg_new_session:
+        return None
+    quality = os.environ.get("REMBG_QUALITY", "high").lower()
+    if quality in ("balanced", "low"):
+        models = ("isnet-general-use", "u2net", "bria-rmbg")
+    else:
+        models = ("bria-rmbg", "birefnet-general", "isnet-general-use", "u2net")
+    for model in models:
+        try:
+            _REMBG_SESSION = rembg_new_session(model)
+            return _REMBG_SESSION
+        except Exception:
+            continue
+    return None
+
+
 def remove_background_local(image_bytes: bytes) -> Tuple[Optional[bytes], Optional[str]]:
-    """로컬 rembg로 배경 제거. alpha_matting으로 엣지 품질 개선."""
+    """로컬 rembg로 배경 제거. bria-rmbg + 2048해상도 + alpha_matting으로 고품질 누끼."""
     if not HAS_REMBG or not HAS_PIL:
         return (None, "rembg 또는 Pillow 미설치")
     try:
         img = Image.open(io.BytesIO(image_bytes)).convert("RGB")
         w, h = img.size
-        if max(w, h) > 1024:
-            ratio = 1024 / max(w, h)
+        quality = os.environ.get("REMBG_QUALITY", "high").lower()
+        max_side = 2560 if quality == "ultra" else (2048 if quality == "high" else 1536)
+        if max(w, h) > max_side:
+            ratio = max_side / max(w, h)
             img = img.resize((int(w * ratio), int(h * ratio)), Image.Resampling.LANCZOS)
+        session = _get_rembg_session()
+        # high 모드: post_process_mask=False (bria 256단계 마스크 보존, morphological로 디테일 손실 방지)
+        use_post = os.environ.get("REMBG_POST_PROCESS", "0").lower() in ("1", "true", "yes")
         out = rembg_remove(
             img,
+            session=session,
             alpha_matting=True,
-            alpha_matting_foreground_threshold=240,
-            alpha_matting_background_threshold=10,
-            alpha_matting_erode_structure_size=10,
+            alpha_matting_foreground_threshold=245,
+            alpha_matting_background_threshold=8,
+            alpha_matting_erode_size=3,  # 3: 병/화장품 등 선명한 엣지에 최적
+            post_process_mask=use_post,
         )
         buf = io.BytesIO()
         out.save(buf, format="PNG")
@@ -485,19 +518,15 @@ def _download_image_for_replicate(image_url: str) -> Optional[Tuple[bytes, str]]
         return None
 
 
-def remove_background_replicate(image_url: str, replicate_token: str) -> Tuple[Optional[bytes], Optional[str]]:
-    """Replicate rembg로 배경 제거. (결과, 오류메시지) 반환. 네이버 CDN은 우리가 다운로드 후 data URI 전달."""
+# Replicate 모델: Bria RMBG 2.0 (256단계 투명도, 이커머스 최적) → rembg 폴백
+_REPLICATE_BRIA_VERSION = "063d41e5fbec2dcce4fa4ab5657f3ade0bf2c2625c73286a34af51cb181189c5"
+_REPLICATE_REMBG_VERSION = "fb8af171cfa1616ddcf1242c093f9c46bcada5ad4cf6f2fbe8b81b330ec5c003"
+
+
+def _replicate_remove(image_input: str, replicate_token: str, version: str) -> Tuple[Optional[bytes], Optional[str]]:
+    """Replicate API 호출. (결과, 오류메시지) 반환."""
     if not HAS_HTTPX:
         return (None, "httpx 미설치")
-    image_input = image_url
-    if "pstatic.net" in image_url or "naver" in image_url.lower():
-        downloaded = _download_image_for_replicate(image_url)
-        if downloaded:
-            raw, mime = downloaded
-            if len(raw) < 5 * 1024 * 1024:
-                image_input = f"data:{mime};base64,{base64.b64encode(raw).decode()}"
-        else:
-            return (None, "네이버 이미지 다운로드 실패 (CDN 접근 불가)")
     try:
         with httpx.Client(timeout=90) as client:
             r = client.post(
@@ -507,10 +536,7 @@ def remove_background_replicate(image_url: str, replicate_token: str) -> Tuple[O
                     "Content-Type": "application/json",
                     "Prefer": "wait=60",
                 },
-                json={
-                    "version": "fb8af171cfa1616ddcf1242c093f9c46bcada5ad4cf6f2fbe8b81b330ec5c003",
-                    "input": {"image": image_input},
-                },
+                json={"version": version, "input": {"image": image_input}},
             )
             if r.status_code in (401, 403):
                 return (None, f"Replicate API 인증 실패 (HTTP {r.status_code}). 토큰을 확인해주세요.")
@@ -550,6 +576,28 @@ def remove_background_replicate(image_url: str, replicate_token: str) -> Tuple[O
         return (None, "Replicate 요청 시간 초과. 잠시 후 다시 시도해주세요.")
     except Exception as e:
         return (None, f"Replicate 오류: {str(e)[:120]}")
+
+
+def remove_background_replicate(image_url: str, replicate_token: str) -> Tuple[Optional[bytes], Optional[str]]:
+    """Replicate로 배경 제거. Bria RMBG 2.0 우선 → rembg 폴백."""
+    if not HAS_HTTPX:
+        return (None, "httpx 미설치")
+    image_input = image_url
+    if "pstatic.net" in image_url or "naver" in image_url.lower():
+        downloaded = _download_image_for_replicate(image_url)
+        if downloaded:
+            raw, mime = downloaded
+            if len(raw) < 5 * 1024 * 1024:
+                image_input = f"data:{mime};base64,{base64.b64encode(raw).decode()}"
+        else:
+            return (None, "네이버 이미지 다운로드 실패 (CDN 접근 불가)")
+    # Bria RMBG 2.0 우선 (256단계 투명도, 상품 최적)
+    result, err = _replicate_remove(image_input, replicate_token, _REPLICATE_BRIA_VERSION)
+    if result:
+        return (result, None)
+    # rembg 폴백
+    result, err2 = _replicate_remove(image_input, replicate_token, _REPLICATE_REMBG_VERSION)
+    return (result, None) if result else (None, err or err2)
 
 
 def _gemini_rest_generate(
@@ -752,9 +800,17 @@ def composite_thumbnail(product_png: bytes, background_png: bytes, core_colors: 
         x = (1000 - nw) // 2
         y = (1000 - nh) // 2
 
-        # 누끼컷 주변 그림자/라인 제거: 반투명 엣지 픽셀 제거 (알파 235 이상만 유지)
+        # 알파 엣지 정제: halo 제거 + 256단계 투명도 보존 (bria-rmbg 품질 활용)
         r, g, b, a = product.split()
-        a = a.point(lambda v: 255 if v >= 235 else 0, mode="L")
+
+        def _refine_alpha(v: int) -> int:
+            if v < 95:
+                return 0
+            if v >= 250:
+                return 255
+            return int((v - 95) * 255 / (250 - 95))
+
+        a = a.point(_refine_alpha, mode="L")
         product = Image.merge("RGBA", (r, g, b, a))
 
         bg.paste(product, (x, y), product)

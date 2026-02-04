@@ -82,6 +82,8 @@ Vercel은 **프론트엔드만** 배포하고, **백엔드는 별도 서비스**
 |--------|------|
 | `GEMINI_API_KEY` | Google AI Studio에서 발급 |
 | `REPLICATE_TOKEN` | (선택) rembg 로컬 실패 시 사용 |
+| `REMBG_QUALITY` | (선택) `ultra`(2560px) / `high`(2048px, 기본) / `balanced`(1536px) |
+| `REMBG_POST_PROCESS` | (선택) `1` 시 mask 후처리 적용 (기본 0, bria 256단계 보존) |
 
 ---
 
