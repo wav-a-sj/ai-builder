@@ -9,6 +9,9 @@ __pycache__/
 *.pyc
 *.pyo
 
+# SNS 연동 토큰 저장 (보안)
+data/
+
 # IDE
 .idea/
 .vscode/

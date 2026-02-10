@@ -128,26 +128,30 @@
     .home-view-input { width: 100%; padding: 16px 20px; font-size: 15px; border: 1px solid #e5e7eb; border-radius: 16px; background: #f9fafb; outline: none; box-sizing: border-box; }
     .home-view-input:focus { border-color: #2C96FF; background: white; }
     .home-view-input::placeholder { color: #9ca3af; }
-    .home-view-icons { display: flex; flex-wrap: wrap; justify-content: center; gap: 24px; }
-    .home-view-icon-btn { display: flex; flex-direction: column; align-items: center; gap: 10px; width: 88px; padding: 20px 12px; background: white; border: 1px solid #e5e7eb; border-radius: 16px; cursor: pointer; transition: all 0.2s; position: relative; z-index: 1; }
-    .home-view-icon-btn:hover { transform: translateY(-2px); }
-    .home-view-icon-btn .icon-wrap { width: 48px; height: 48px; border-radius: 50%; display: flex; align-items: center; justify-content: center; }
-    .home-view-icon-btn span { font-size: 13px; font-weight: 600; }
-    .home-view-icon-btn[data-home-nav="chat"] .icon-wrap { background: rgba(44, 150, 255, 0.15); color: #2C96FF; }
-    .home-view-icon-btn[data-home-nav="chat"] span { color: #2C96FF; }
-    .home-view-icon-btn[data-home-nav="chat"]:hover { border-color: #2C96FF; background: rgba(44, 150, 255, 0.06); }
-    .home-view-icon-btn[data-home-nav="image"] .icon-wrap { background: rgba(139, 92, 246, 0.15); color: #7c3aed; }
-    .home-view-icon-btn[data-home-nav="image"] span { color: #7c3aed; }
-    .home-view-icon-btn[data-home-nav="image"]:hover { border-color: #7c3aed; background: rgba(139, 92, 246, 0.06); }
-    .home-view-icon-btn[data-home-nav="cardnews"] .icon-wrap { background: rgba(234, 88, 12, 0.15); color: #ea580c; }
-    .home-view-icon-btn[data-home-nav="cardnews"] span { color: #ea580c; }
-    .home-view-icon-btn[data-home-nav="cardnews"]:hover { border-color: #ea580c; background: rgba(234, 88, 12, 0.06); }
-    .home-view-icon-btn[data-home-nav="video"] .icon-wrap { background: rgba(16, 185, 129, 0.15); color: #10b981; }
-    .home-view-icon-btn[data-home-nav="video"] span { color: #10b981; }
-    .home-view-icon-btn[data-home-nav="video"]:hover { border-color: #10b981; background: rgba(16, 185, 129, 0.06); }
-    .home-view-icon-btn[data-home-nav="shopping"] .icon-wrap { background: rgba(245, 158, 11, 0.15); color: #f59e0b; }
-    .home-view-icon-btn[data-home-nav="shopping"] span { color: #f59e0b; }
-    .home-view-icon-btn[data-home-nav="shopping"]:hover { border-color: #f59e0b; background: rgba(245, 158, 11, 0.06); }
+    /* 홈 영역 카드 (4개) */
+    .home-view-cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 20px; max-width: 720px; width: 100%; }
+    .home-view-card { display: flex; flex-direction: column; align-items: flex-start; gap: 12px; padding: 24px; background: white; border: 1px solid #e5e7eb; border-radius: 16px; cursor: pointer; transition: all 0.2s; text-align: left; }
+    .home-view-card:hover { transform: translateY(-2px); box-shadow: 0 4px 12px rgba(0,0,0,0.06); }
+    .home-view-card .card-icon { width: 44px; height: 44px; border-radius: 12px; display: flex; align-items: center; justify-content: center; }
+    .home-view-card .card-title { font-size: 16px; font-weight: 700; color: #111827; }
+    .home-view-card .card-desc { font-size: 13px; color: #6b7280; line-height: 1.4; }
+    .home-view-card[data-home-nav="chat"] .card-icon { background: rgba(44, 150, 255, 0.15); color: #2C96FF; }
+    .home-view-card[data-home-nav="chat"]:hover { border-color: #2C96FF; }
+    .home-view-card[data-home-nav="create"] .card-icon { background: rgba(139, 92, 246, 0.15); color: #7c3aed; }
+    .home-view-card[data-home-nav="create"]:hover { border-color: #7c3aed; }
+    .home-view-card[data-home-nav="sns-flow"] .card-icon { background: rgba(13, 148, 136, 0.15); color: #0d9488; }
+    .home-view-card[data-home-nav="sns-flow"]:hover { border-color: #0d9488; }
+    .home-view-card[data-home-nav="shopping"] .card-icon { background: rgba(245, 158, 11, 0.15); color: #f59e0b; }
+    .home-view-card[data-home-nav="shopping"]:hover { border-color: #f59e0b; }
+    .home-view-create-sub { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 4px; }
+    .home-view-create-sub button { padding: 8px 14px; font-size: 12px; font-weight: 600; border-radius: 10px; border: 1px solid #e5e7eb; background: white; color: #4b5563; cursor: pointer; transition: all 0.15s; }
+    .home-view-create-sub button:hover { background: #f9fafb; border-color: #d1d5db; color: #111827; }
+    .home-view-create-sub button[data-home-nav="image"] { border-color: rgba(139, 92, 246, 0.4); color: #7c3aed; }
+    .home-view-create-sub button[data-home-nav="image"]:hover { background: rgba(139, 92, 246, 0.08); }
+    .home-view-create-sub button[data-home-nav="cardnews"] { border-color: rgba(234, 88, 12, 0.4); color: #ea580c; }
+    .home-view-create-sub button[data-home-nav="cardnews"]:hover { background: rgba(234, 88, 12, 0.08); }
+    .home-view-create-sub button[data-home-nav="video"] { border-color: rgba(16, 185, 129, 0.4); color: #10b981; }
+    .home-view-create-sub button[data-home-nav="video"]:hover { background: rgba(16, 185, 129, 0.08); }
   </style>
 </head>
 <body class="h-screen overflow-hidden bg-gray-100">
@@ -170,13 +174,10 @@
           <button id="nav-home" class="nav-item-active p-2.5 rounded-lg text-gray-300 hover:text-white hover:bg-white/10 transition-colors" title="홈" data-menu="home">
             <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"/></svg>
           </button>
-          <button id="nav-ai-drive" class="p-2.5 rounded-lg text-gray-400 hover:text-white hover:bg-white/10 transition-colors" title="AI 드라이브">
-            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 19a2 2 0 01-2-2V7a2 2 0 012-2h4l2 2h4a2 2 0 012 2v1M5 19h14a2 2 0 002-2v-5a2 2 0 00-2-2H9a2 2 0 00-2 2v5a2 2 0 01-2 2z"/></svg>
-          </button>
-          <div class="w-8 h-px bg-gray-600 my-1"></div>
           <button id="nav-chat" class="p-2.5 rounded-lg text-gray-400 hover:text-white hover:bg-white/10 transition-colors" title="AI 채팅" data-menu="chat">
             <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"/></svg>
           </button>
+          <div class="w-8 h-px bg-gray-600 my-1"></div>
           <button id="nav-image" class="p-2.5 rounded-lg text-gray-400 hover:text-white hover:bg-white/10 transition-colors" title="이미지" data-mode="image">
             <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
           </button>
@@ -197,33 +198,14 @@
             <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
           </button>
         </div>
-        <!-- 설정 버튼 (최하단) -->
-        <div class="mt-auto pt-2 border-t border-gray-600/50 w-full flex justify-center">
-          <div class="relative">
-            <button id="api-settings-btn" class="p-2.5 rounded-lg text-gray-400 hover:text-white hover:bg-white/10 transition-colors" title="API 설정">
-              <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
-            </button>
-            <!-- API 설정 팝오버 -->
-            <div id="api-settings-popover" class="hidden absolute left-full bottom-0 ml-2 z-50 w-80 p-4 bg-white rounded-lg shadow-xl border border-gray-200">
-              <h3 class="text-sm font-semibold text-gray-800 mb-3">API 설정</h3>
-              <div id="api-input-area" class="flex flex-col gap-3">
-                <div>
-                  <label class="text-xs text-gray-500 mb-1 block">Gemini API Key</label>
-                  <input type="password" id="api-key-input" placeholder="Gemini API Key" class="px-4 py-2 border border-gray-300 rounded-lg w-full text-sm">
-                </div>
-                <div>
-                  <label class="text-xs text-gray-500 mb-1 block">Replicate API Token (쇼핑 누끼)</label>
-                  <input type="password" id="replicate-token-input" placeholder="r8_xxxx..." class="px-4 py-2 border border-gray-300 rounded-lg w-full text-sm">
-                </div>
-                <div class="flex items-center gap-2">
-                  <button id="save-api-key" class="accent-blue text-white px-4 py-2 rounded-lg text-sm font-medium flex-1">저장</button>
-                  <button id="copy-api-key" class="p-2 text-gray-500 hover:text-gray-700 hover:bg-gray-100 rounded-lg" title="복사">
-                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"/></svg>
-                  </button>
-                </div>
-              </div>
-            </div>
-          </div>
+        <!-- SNS 연동 · 설정 (최하단) -->
+        <div class="mt-auto pt-2 border-t border-gray-600/50 w-full flex flex-col items-center gap-1">
+          <button id="nav-sns-settings" class="p-2.5 rounded-lg text-gray-400 hover:text-white hover:bg-white/10 transition-colors" title="SNS 연동 · 발행" data-menu="sns-settings">
+            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.684 13.342C8.886 12.938 9 12.482 9 12c0-.482-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m0 2.684l6.632 3.316m-6.632-6l6.632-3.316m0 0a3 3 0 105.367-2.684 3 3 0 00-5.367 2.684zm0 9.316a3 3 0 105.368 2.684 3 3 0 00-5.368-2.684z"/></svg>
+          </button>
+          <button id="api-settings-btn" class="p-2.5 rounded-lg text-gray-400 hover:text-white hover:bg-white/10 transition-colors" title="설정 (API)" data-menu="settings">
+            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
+          </button>
         </div>
       </nav>
 
@@ -268,7 +250,7 @@
           <div id="chat-container" class="flex-1 overflow-y-auto overflow-x-hidden p-4 pb-8 space-y-4 min-h-0 bg-white">
           </div>
           <div id="loading-status-bar" class="hidden shrink-0 px-4 py-2.5 bg-blue-50 text-blue-700 text-sm font-medium border-t border-blue-100">제작 중 0%</div>
-          <div class="p-4 border-t border-gray-200 bg-white shrink-0 sidebar-chat-area mx-2 mb-2">
+          <div id="sidebar-design-input-area" class="p-4 border-t border-gray-200 bg-white shrink-0 sidebar-chat-area mx-2 mb-2">
             <div id="attachment-drop-zone" class="flex flex-col gap-2 rounded-lg transition-colors cursor-pointer">
               <div id="attachment-preview" class="hidden shrink-0 flex flex-wrap items-start gap-2 p-2 border border-gray-200 rounded-lg bg-gray-50">
               </div>
@@ -338,32 +320,108 @@
             <div class="home-view-input-wrap">
               <textarea id="home-view-input" rows="1" class="home-view-input chat-input-auto-resize w-full py-3 px-4" placeholder="무엇이든 물어보고 만들어보세요" autocomplete="off"></textarea>
             </div>
-            <div class="home-view-icons">
-              <button type="button" class="home-view-icon-btn" data-home-nav="chat" title="AI 채팅">
-                <span class="icon-wrap"><svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"/></svg></span>
-                <span>채팅</span>
-              </button>
-              <button type="button" class="home-view-icon-btn" data-home-nav="image" title="AI 이미지">
-                <span class="icon-wrap"><svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg></span>
-                <span>이미지</span>
-              </button>
-              <button type="button" class="home-view-icon-btn" data-home-nav="cardnews" title="AI 카드뉴스">
-                <span class="icon-wrap"><svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"/></svg></span>
-                <span>카드뉴스</span>
-              </button>
-              <button type="button" class="home-view-icon-btn" data-home-nav="video" title="AI 영상">
-                <span class="icon-wrap"><svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z"/></svg></span>
-                <span>영상</span>
-              </button>
-              <button type="button" class="home-view-icon-btn" data-home-nav="shopping" title="쇼핑몰 썸네일">
-                <span class="icon-wrap"><svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4H6zM3 6h18M16 10a4 4 0 01-8 0"/></svg></span>
-                <span>쇼핑몰</span>
-              </button>
-              <button type="button" class="home-view-icon-btn" data-home-nav="sns-flow" title="SNS 원스톱">
-                <span class="icon-wrap"><svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg></span>
-                <span>SNS 원스톱</span>
-              </button>
+            <div class="home-view-cards">
+              <div class="home-view-card" data-home-nav="chat" title="AI 대화">
+                <span class="card-icon"><svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"/></svg></span>
+                <span class="card-title">AI 대화</span>
+                <span class="card-desc">채팅으로 기획·문서·질문을 한 번에</span>
+              </div>
+              <div class="home-view-card" data-home-nav="create" title="콘텐츠 제작">
+                <span class="card-icon"><svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg></span>
+                <span class="card-title">콘텐츠 제작</span>
+                <span class="card-desc">이미지, 카드뉴스, 숏폼 영상 제작</span>
+                <div class="home-view-create-sub" onclick="event.stopPropagation()">
+                  <button type="button" data-home-nav="image">이미지</button>
+                  <button type="button" data-home-nav="cardnews">카드뉴스</button>
+                  <button type="button" data-home-nav="video">영상</button>
+                </div>
+              </div>
+              <div class="home-view-card" data-home-nav="sns-flow" title="SNS 발행">
+                <span class="card-icon"><svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg></span>
+                <span class="card-title">SNS 발행</span>
+                <span class="card-desc">기획 → 캡션 → 예약·지금 발행까지 원스톱</span>
+              </div>
+              <div class="home-view-card" data-home-nav="shopping" title="쇼핑·도구">
+                <span class="card-icon"><svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4H6zM3 6h18M16 10a4 4 0 01-8 0"/></svg></span>
+                <span class="card-title">쇼핑·도구</span>
+                <span class="card-desc">네이버 쇼핑 썸네일 생성</span>
+              </div>
             </div>
+          </div>
+        </div>
+        <!-- 설정 뷰 (전체 페이지) -->
+        <div id="settings-view" class="hidden flex flex-col flex-1 min-h-0 bg-white overflow-y-auto">
+          <div class="sticky top-0 z-10 shrink-0 flex items-center gap-4 px-6 py-4 border-b border-gray-200 bg-white">
+            <button type="button" id="settings-back-btn" class="p-2 rounded-lg text-gray-600 hover:bg-gray-100 hover:text-gray-900" title="홈으로">
+              <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"/></svg>
+            </button>
+            <h1 class="text-lg font-semibold text-gray-900">설정</h1>
+          </div>
+          <div class="flex-1 p-6 max-w-2xl mx-auto w-full">
+            <section class="mb-8">
+              <h2 class="text-sm font-semibold text-gray-500 uppercase tracking-wider mb-3">API 설정</h2>
+              <div id="api-input-area" class="flex flex-col gap-3">
+                <div>
+                  <label class="text-xs text-gray-500 mb-1 block">Gemini API Key</label>
+                  <input type="password" id="api-key-input" placeholder="Gemini API Key" class="px-4 py-2 border border-gray-300 rounded-lg w-full text-sm">
+                </div>
+                <div>
+                  <label class="text-xs text-gray-500 mb-1 block">Replicate API Token (쇼핑 누끼)</label>
+                  <input type="password" id="replicate-token-input" placeholder="r8_xxxx..." class="px-4 py-2 border border-gray-300 rounded-lg w-full text-sm">
+                </div>
+                <div class="flex items-center gap-2">
+                  <button id="save-api-key" class="accent-blue text-white px-4 py-2 rounded-lg text-sm font-medium flex-1">저장</button>
+                  <button id="copy-api-key" class="p-2 text-gray-500 hover:text-gray-700 hover:bg-gray-100 rounded-lg" title="복사">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"/></svg>
+                  </button>
+                </div>
+              </div>
+            </section>
+          </div>
+        </div>
+        <!-- SNS 연동·댓글·성과 뷰 (설정과 분리) -->
+        <div id="sns-settings-view" class="hidden flex flex-col flex-1 min-h-0 bg-white overflow-y-auto">
+          <div class="sticky top-0 z-10 shrink-0 flex items-center gap-4 px-6 py-4 border-b border-gray-200 bg-white">
+            <button type="button" id="sns-settings-back-btn" class="p-2 rounded-lg text-gray-600 hover:bg-gray-100 hover:text-gray-900" title="홈으로">
+              <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"/></svg>
+            </button>
+            <h1 class="text-lg font-semibold text-gray-900">SNS 연동 · 발행</h1>
+          </div>
+          <div class="flex-1 p-6 max-w-2xl mx-auto w-full">
+            <section class="mb-8">
+              <h2 class="text-sm font-semibold text-gray-500 uppercase tracking-wider mb-3">SNS 연동</h2>
+              <p class="text-sm text-gray-600 mb-3">연동한 계정으로 SNS 원스톱에서 바로 발행할 수 있습니다. Facebook·인스타그램, Threads, YouTube를 각각 연결할 수 있으며, 여러 플랫폼을 동시에 연동할 수 있습니다.</p>
+              <div id="sns-connections-list" class="mb-3 space-y-2 text-sm"></div>
+              <div class="flex flex-wrap gap-2">
+                <a id="sns-connect-facebook-btn" href="#" class="px-4 py-2 rounded-lg text-sm font-medium bg-[#1877f2] text-white hover:bg-[#166fe5] transition-colors">Facebook · 인스타그램 연결</a>
+                <a id="sns-connect-threads-btn" href="#" class="px-4 py-2 rounded-lg text-sm font-medium bg-black text-white hover:bg-gray-800 transition-colors">Threads 연결</a>
+                <a id="sns-connect-youtube-btn" href="#" class="px-4 py-2 rounded-lg text-sm font-medium bg-[#ff0000] text-white hover:bg-[#cc0000] transition-colors">YouTube 연결</a>
+              </div>
+              <p class="text-xs text-gray-500 mt-2">Facebook 연결 시 해당 페이지와 연결된 인스타그램 비즈니스 계정이 함께 추가됩니다. Threads·YouTube는 각각 Meta 앱·Google Cloud 설정이 필요합니다.</p>
+              <p id="sns-auth-hint" class="text-xs text-gray-500 mt-3 hidden">서버에 FACEBOOK_APP_ID/SECRET, THREADS_APP_ID/SECRET, GOOGLE_CLIENT_ID/SECRET를 설정하면 연결이 가능합니다.</p>
+            </section>
+            <section class="mb-8">
+              <h2 class="text-sm font-semibold text-gray-500 uppercase tracking-wider mb-3">댓글 관리 (AI 답글)</h2>
+              <p class="text-sm text-gray-600 mb-2">Facebook·Threads·인스타그램·YouTube 게시물 댓글에 AI가 답글을 달 수 있습니다. 댓글별로 공개 답글 또는 비공개 답글(DM)을 보낼 수 있습니다.</p>
+              <p class="text-xs text-amber-700 mb-2">자동 DM(새 댓글 시 자동 비공개 답글) 기능은 준비 중이며, 현재는 댓글별 수동 DM만 지원합니다.</p>
+              <div class="mb-2">
+                <label class="text-xs text-gray-500 block mb-1">계정 선택</label>
+                <select id="sns-comments-connection-id" class="w-full px-3 py-2 border border-gray-200 rounded-lg text-sm bg-white"></select>
+              </div>
+              <button type="button" id="sns-comments-load-posts-btn" class="mb-2 px-4 py-2 rounded-lg text-sm font-medium bg-gray-100 hover:bg-gray-200 text-gray-800">게시물 불러오기</button>
+              <div id="sns-comments-posts-list" class="mb-2 max-h-32 overflow-y-auto space-y-1 text-sm"></div>
+              <div id="sns-comments-comments-list" class="space-y-2 text-sm text-gray-600 max-h-40 overflow-y-auto"></div>
+            </section>
+            <section class="mb-8">
+              <h2 class="text-sm font-semibold text-gray-500 uppercase tracking-wider mb-3">성과 분석</h2>
+              <p class="text-sm text-gray-600 mb-2">Facebook·Threads·인스타그램·YouTube 연동 계정별 조회수·도달·참여 등 지표를 확인할 수 있습니다.</p>
+              <div class="flex flex-wrap gap-2 mb-3">
+                <button type="button" id="sns-insights-refresh-btn" class="px-4 py-2 rounded-lg text-sm font-medium bg-gray-100 hover:bg-gray-200 text-gray-800">성과 새로고침</button>
+                <button type="button" id="sns-insights-ai-report-btn" class="px-4 py-2 rounded-lg text-sm font-medium bg-[#2C96FF] text-white hover:bg-[#2380e0]">AI 리포트 생성</button>
+              </div>
+              <div id="sns-insights-list" class="space-y-2 text-sm text-gray-600"></div>
+              <div id="sns-insights-ai-report-result" class="mt-3 hidden space-y-2 text-sm border-t border-gray-200 pt-3"></div>
+            </section>
           </div>
         </div>
         <!-- 쇼핑 뷰 (/shopping) -->
@@ -446,7 +504,10 @@
                 <h2 class="text-lg font-semibold text-gray-800 mb-2">카드뉴스 제작</h2>
                 <p class="text-sm text-gray-600 mb-4">선택한 기획으로 카드뉴스를 만듭니다. 카드뉴스 메뉴에서 이어서 편집할 수 있습니다.</p>
                 <div id="sns-step2-selected" class="mb-4 p-3 rounded-lg bg-white border border-gray-200 text-sm text-gray-700"></div>
-                <button type="button" id="sns-goto-cardnews-btn" class="px-5 py-3 rounded-xl bg-[#2C96FF] text-white text-sm font-semibold hover:bg-[#2380e0] transition-colors">카드뉴스로 이동하여 제작</button>
+                <div class="flex flex-wrap gap-2">
+                  <button type="button" id="sns-goto-cardnews-btn" class="px-5 py-3 rounded-xl bg-[#2C96FF] text-white text-sm font-semibold hover:bg-[#2380e0] transition-colors">카드뉴스로 이동하여 제작</button>
+                  <button type="button" id="sns-goto-video-btn" class="px-5 py-3 rounded-xl bg-[#7c3aed] text-white text-sm font-semibold hover:bg-[#6d28d9] transition-colors">숏폼(영상)으로 이동하여 제작</button>
+                </div>
               </div>
               <!-- Step 3: 캡션 -->
               <div id="sns-step-3" class="sns-step-panel hidden border border-gray-200 rounded-xl p-6 bg-gray-50/50">
@@ -463,7 +524,24 @@
               <!-- Step 4: 예약 -->
               <div id="sns-step-4" class="sns-step-panel hidden border border-gray-200 rounded-xl p-6 bg-gray-50/50">
                 <h2 class="text-lg font-semibold text-gray-800 mb-2">발행 예약</h2>
-                <p class="text-sm text-gray-600 mb-4">예약 날짜/시간을 설정하면 목록에 저장됩니다. (실제 발행은 SNS 연동 후 가능)</p>
+                <p class="text-sm text-gray-600 mb-4">연동된 SNS로 지금 발행하거나, 예약 일시를 넣어 목록에 저장할 수 있습니다. 클라이언트(계정)를 선택해 발행하세요.</p>
+                <div class="mb-4 space-y-2">
+                  <label class="text-xs text-gray-500 block">발행할 계정</label>
+                  <select id="sns-publish-connection-id" class="w-full max-w-md px-3 py-2 border border-gray-200 rounded-lg text-sm bg-white">
+                    <option value="">연동된 계정 불러오는 중...</option>
+                  </select>
+                  <div id="sns-youtube-video-url-wrap" class="hidden mt-2 max-w-md">
+                    <label class="text-xs text-gray-500 block mb-1">YouTube 업로드할 영상 URL</label>
+                    <input type="url" id="sns-youtube-video-url" class="w-full px-3 py-2 border border-gray-200 rounded-lg text-sm bg-white" placeholder="https://.../video.mp4" />
+                    <p class="text-xs text-gray-500 mt-1">YouTube는 현재 <span class="font-medium">공개 접근 가능한 MP4 URL</span>로 업로드합니다. (로컬 파일/비공개 URL은 불가)</p>
+                  </div>
+                  <button type="button" id="sns-publish-now-btn" class="mt-2 px-5 py-3 rounded-xl bg-[#0d9488] text-white text-sm font-semibold hover:bg-[#0f766e] transition-colors disabled:opacity-50 disabled:cursor-not-allowed">지금 발행</button>
+                </div>
+                <div class="mb-2">
+                  <label class="text-xs text-gray-500 block mb-1">추천 시간 (클릭 시 일시 적용)</label>
+                  <div id="sns-suggested-times" class="flex flex-wrap gap-2 text-sm"></div>
+                  <p id="sns-suggested-reason" class="text-xs text-gray-500 mt-1"></p>
+                </div>
                 <div class="flex flex-wrap gap-4 mb-4">
                   <div><label class="text-xs text-gray-500 block mb-1">예약 일시</label><input type="datetime-local" id="sns-schedule-datetime" class="px-3 py-2 border border-gray-200 rounded-lg text-sm" /></div>
                   <div class="flex items-end"><button type="button" id="sns-schedule-save-btn" class="px-5 py-3 rounded-xl bg-[#2C96FF] text-white text-sm font-semibold hover:bg-[#2380e0] transition-colors">예약 목록에 저장</button></div>
@@ -1004,25 +1082,13 @@ ADDITION MODE: Output NEW overlay. If user wants "다른 버전/비교/추가" w
       const key = apiKeyInput.value.trim() || localStorage.getItem(STORAGE_KEY);
       const repInput = document.getElementById('replicate-token-input');
       const rep = repInput?.value.trim() || localStorage.getItem(REPLICATE_STORAGE_KEY);
-      const popover = document.getElementById('api-settings-popover');
       const btn = document.getElementById('api-settings-btn');
       if (key || rep) {
-        popover?.classList.add('hidden');
         if (btn) btn.title = 'API 설정' + (key ? ' (Gemini ' + maskApiKey(key) + ')' : '') + (rep ? ' (Replicate 저장됨)' : '');
       }
     }
     function showApiInputState() {
-      const popover = document.getElementById('api-settings-popover');
-      popover?.classList.remove('hidden');
-    }
-    function toggleApiPopover(e) {
-      e?.stopPropagation();
-      const popover = document.getElementById('api-settings-popover');
-      if (popover?.classList.contains('hidden')) {
-        popover.classList.remove('hidden');
-      } else {
-        popover?.classList.add('hidden');
-      }
+      if (typeof switchView === 'function') switchView('settings');
     }
     document.getElementById('save-api-key')?.addEventListener('click', () => {
       const key = apiKeyInput.value.trim();
@@ -1034,14 +1100,217 @@ ADDITION MODE: Output NEW overlay. If user wants "다른 버전/비교/추가" w
       showApiSavedState();
       if (typeof window.updateShoppingApiBanner === 'function') window.updateShoppingApiBanner();
     });
-    document.getElementById('api-settings-btn')?.addEventListener('click', toggleApiPopover);
-    document.addEventListener('click', (e) => {
-      const popover = document.getElementById('api-settings-popover');
-      const btn = document.getElementById('api-settings-btn');
-      if (popover && !popover.contains(e.target) && !btn?.contains(e.target)) {
-        popover.classList.add('hidden');
-      }
+    document.getElementById('api-settings-btn')?.addEventListener('click', () => {
+      switchView('settings');
     });
+    document.getElementById('nav-sns-settings')?.addEventListener('click', () => {
+      switchView('sns-settings');
+    });
+    document.getElementById('settings-back-btn')?.addEventListener('click', () => {
+      switchView('home');
+    });
+    document.getElementById('sns-settings-back-btn')?.addEventListener('click', () => {
+      switchView('home');
+    });
+    window.loadSnsInsights = async function() {
+      const listEl = document.getElementById('sns-insights-list');
+      if (!listEl) return;
+      const apiBase = (location.protocol === 'http:' || location.protocol === 'https:') ? location.origin : 'http://localhost:8000';
+      listEl.innerHTML = '<p class="text-gray-500">불러오는 중...</p>';
+      try {
+        const r = await fetch(apiBase + '/api/sns/insights');
+        const data = await r.json().catch(() => ({}));
+        const conns = data.connections || [];
+        if (conns.length === 0) {
+          listEl.innerHTML = '<p class="text-gray-500">연동된 계정이 없거나 성과를 불러올 수 없습니다.</p>';
+        } else {
+          listEl.innerHTML = conns.map(function(c) {
+            const name = (c.name || c.platform || '').replace(/</g, '&lt;');
+            const platform = (c.platform || '').replace(/</g, '&lt;');
+            const m = c.metrics || {};
+            const parts = [];
+            if (m.page_fans != null) parts.push('팔로워: ' + m.page_fans);
+            if (m.page_impressions != null) parts.push('노출: ' + m.page_impressions);
+            if (m.page_engaged_users != null) parts.push('참여: ' + m.page_engaged_users);
+            if (m.impressions != null) parts.push('노출: ' + m.impressions);
+            if (m.reach != null) parts.push('도달: ' + m.reach);
+            if (m.profile_views != null) parts.push('프로필조회: ' + m.profile_views);
+            if (m._error) parts.push('(오류)');
+            const metricsStr = parts.length ? parts.join(' · ') : '(지표 없음)';
+            return '<div class="p-2 rounded-lg bg-gray-50 border border-gray-200"><div class="font-medium text-gray-800">' + name + ' <span class="text-xs text-gray-500">' + platform + '</span></div><div class="text-xs mt-1">' + metricsStr + '</div></div>';
+          }).join('');
+        }
+      } catch (_) {
+        listEl.innerHTML = '<p class="text-gray-500">성과를 불러올 수 없습니다. (서버 연결 확인)</p>';
+      }
+    };
+    document.getElementById('sns-insights-refresh-btn')?.addEventListener('click', function() {
+      if (typeof window.loadSnsInsights === 'function') window.loadSnsInsights();
+      document.getElementById('sns-insights-ai-report-result')?.classList.add('hidden');
+    });
+    document.getElementById('sns-insights-ai-report-btn')?.addEventListener('click', async function() {
+      var resultEl = document.getElementById('sns-insights-ai-report-result');
+      if (!resultEl) return;
+      var btn = this;
+      var apiBase = (location.protocol === 'http:' || location.protocol === 'https:') ? location.origin : 'http://localhost:8000';
+      var key = (apiKeyInput && apiKeyInput.value) ? apiKeyInput.value.trim() : (localStorage.getItem(STORAGE_KEY) || '');
+      if (!key) { alert('Gemini API Key를 설정해주세요.'); return; }
+      btn.disabled = true;
+      resultEl.innerHTML = 'AI 리포트 생성 중...';
+      resultEl.classList.remove('hidden');
+      try {
+        var r = await fetch(apiBase + '/api/sns/insights/report', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ gemini_api_key: key })
+        });
+        var data = await r.json().catch(function() { return {}; });
+        var reports = data.reports || [];
+        if (!reports.length) { resultEl.innerHTML = '연동 계정이 없거나 생성할 리포트가 없습니다.'; }
+        else {
+          resultEl.innerHTML = reports.map(function(x) {
+            var name = (x.name || '').replace(/</g, '&lt;');
+            var report = (x.report || '').replace(/</g, '&lt;').replace(/\n/g, '<br>');
+            return '<div class="p-2 rounded-lg bg-blue-50 border border-blue-100"><div class="font-medium text-gray-800">' + name + '</div><div class="text-gray-700 mt-1">' + report + '</div></div>';
+          }).join('');
+        }
+      } catch (e) {
+        resultEl.innerHTML = '리포트 생성 실패: ' + (e.message || e);
+      }
+      btn.disabled = false;
+    });
+    // 페이지 로드 시 #settings + sns_connected / sns_error 있으면 설정 페이지로 이동 후 메시지
+    (function checkSettingsHash() {
+      const hash = window.location.hash || '';
+      const params = new URLSearchParams(window.location.search);
+      if (hash !== '#settings' && !params.has('sns_connected') && !params.has('sns_error')) return;
+      switchView('settings');
+      if (params.has('sns_connected')) {
+        const name = params.get('name') || '연동됨';
+        alert('SNS 연동 완료: ' + decodeURIComponent(name));
+        window.history.replaceState('', '', window.location.pathname + '#settings');
+      }
+      if (params.has('sns_error')) {
+        const msg = params.get('sns_error') || '연동 실패';
+        alert('SNS 연동 오류: ' + decodeURIComponent(msg));
+        window.history.replaceState('', '', window.location.pathname + '#settings');
+      }
+      if (typeof window.loadSnsConnections === 'function') window.loadSnsConnections();
+    })();
+    window.loadSnsConnections = async function() {
+      const listEl = document.getElementById('sns-connections-list');
+      const fbBtn = document.getElementById('sns-connect-facebook-btn');
+      const threadsBtn = document.getElementById('sns-connect-threads-btn');
+      const youtubeBtn = document.getElementById('sns-connect-youtube-btn');
+      const hint = document.getElementById('sns-auth-hint');
+      const apiBase = (location.protocol === 'http:' || location.protocol === 'https:') ? location.origin : 'http://localhost:8000';
+      if (fbBtn) fbBtn.href = apiBase + '/api/sns/auth/facebook';
+      if (threadsBtn) threadsBtn.href = apiBase + '/api/sns/auth/threads';
+      if (youtubeBtn) youtubeBtn.href = apiBase + '/api/sns/auth/youtube';
+      if (!listEl) return;
+      try {
+        const r = await fetch(apiBase + '/api/sns/connections');
+        const data = await r.json().catch(() => ({}));
+        const conns = data.connections || [];
+        if (conns.length === 0) {
+          listEl.innerHTML = '<p class="text-gray-500 text-sm">연동된 계정이 없습니다. 클라이언트별로 여러 계정을 연결할 수 있습니다.</p>';
+          if (hint) hint.classList.remove('hidden');
+        } else {
+          if (hint) hint.classList.add('hidden');
+          listEl.innerHTML = conns.map(function(c) {
+            const id = (c.id || '').replace(/</g, '&lt;');
+            const name = (c.name || c.platform || '').replace(/</g, '&lt;');
+            const platform = (c.platform || '').replace(/</g, '&lt;');
+            return '<div class="flex justify-between items-center p-2 rounded-lg bg-gray-50 border border-gray-200"><span class="font-medium">' + name + '</span><span class="text-xs text-gray-500">' + platform + '</span><button type="button" class="sns-disconnect-btn px-2 py-1 text-xs text-red-600 hover:bg-red-50 rounded" data-connection-id="' + id + '" data-name="' + (name.replace(/"/g, '&quot;')) + '">연동 해제</button></div>';
+          }).join('');
+          listEl.querySelectorAll('.sns-disconnect-btn').forEach(function(btn) {
+            btn.addEventListener('click', async function() {
+              const cid = btn.dataset.connectionId;
+              const name = (btn.dataset.name || '이 계정').replace(/&quot;/g, '"');
+              if (!cid || !confirm(name + ' 연동을 해제할까요?')) return;
+              try {
+                const res = await fetch(apiBase + '/api/sns/disconnect/' + encodeURIComponent(cid), { method: 'POST' });
+                if (res.ok) window.loadSnsConnections(); else alert('해제 실패');
+              } catch (e) { alert('해제 실패: ' + (e.message || e)); }
+            });
+          });
+        }
+        } catch (e) {
+        listEl.innerHTML = '<p class="text-red-600 text-sm">연동 목록을 불러올 수 없습니다. (서버가 실행 중인지 확인하세요.)</p>';
+        if (hint) hint.classList.remove('hidden');
+      }
+      var commentSel = document.getElementById('sns-comments-connection-id');
+      if (commentSel && conns && conns.length) {
+        var fbConns = conns.filter(function(c) { return c.platform === 'facebook'; });
+        commentSel.innerHTML = fbConns.length ? fbConns.map(function(c) { return '<option value="' + (c.id || '').replace(/"/g, '&quot;') + '">' + (c.name || c.platform || '').replace(/</g, '&lt;') + '</option>'; }).join('') : '<option value="">Facebook 계정 없음</option>';
+      }
+    };
+    (function initSnsCommentsUi() {
+      const apiBase = (location.protocol === 'http:' || location.protocol === 'https:') ? location.origin : 'http://localhost:8000';
+      document.getElementById('sns-comments-load-posts-btn')?.addEventListener('click', async function() {
+        var sel = document.getElementById('sns-comments-connection-id');
+        var list = document.getElementById('sns-comments-posts-list');
+        var commentsList = document.getElementById('sns-comments-comments-list');
+        var cid = sel?.value?.trim();
+        if (!cid || !list) return;
+        list.innerHTML = '불러오는 중...';
+        commentsList.innerHTML = '';
+        try {
+          var r = await fetch(apiBase + '/api/sns/posts?connection_id=' + encodeURIComponent(cid) + '&limit=10');
+          var data = await r.json().catch(function() { return {}; });
+          var posts = data.posts || [];
+          if (!posts.length) { list.innerHTML = '게시물이 없습니다.'; return; }
+          list.innerHTML = posts.map(function(p) {
+            var msg = (p.message || '').slice(0, 40).replace(/</g, '&lt;');
+            var pid = (p.id || '').replace(/"/g, '&quot;');
+            return '<button type="button" class="sns-post-item block w-full text-left px-2 py-1 rounded border border-gray-200 hover:bg-gray-50 text-xs" data-post-id="' + pid + '" data-post-message="' + (p.message || '').slice(0, 200).replace(/"/g, '&quot;').replace(/</g, '&lt;') + '">' + msg + '…</button>';
+          }).join('');
+          list.querySelectorAll('.sns-post-item').forEach(function(btn) {
+            btn.addEventListener('click', async function() {
+              var postId = btn.dataset.postId;
+              var postMessage = btn.dataset.postMessage || '';
+              if (!postId || !commentsList) return;
+              commentsList.innerHTML = '댓글 불러오는 중...';
+              try {
+                var r2 = await fetch(apiBase + '/api/sns/comments?connection_id=' + encodeURIComponent(cid) + '&post_id=' + encodeURIComponent(postId));
+                var data2 = await r2.json().catch(function() { return {}; });
+                var comments = data2.comments || [];
+                if (!comments.length) { commentsList.innerHTML = '댓글 없음'; return; }
+                commentsList.innerHTML = comments.map(function(c) {
+                  var fromName = (c.from && c.from.name) ? c.from.name : '익명';
+                  var msg = (c.message || '').replace(/</g, '&lt;').replace(/"/g, '&quot;');
+                  var cid2 = (c.id || '').replace(/"/g, '&quot;');
+                  return '<div class="p-2 rounded bg-gray-50 border border-gray-200"><div class="text-gray-800">' + fromName + ': ' + msg + '</div><div class="mt-1 flex gap-1"><button type="button" class="sns-ai-reply-btn px-2 py-1 text-xs bg-[#2C96FF] text-white rounded hover:bg-[#2380e0]" data-comment-id="' + cid2 + '" data-comment-text="' + msg + '" data-post-message="' + postMessage + '">AI 답글</button><button type="button" class="sns-ai-dm-btn px-2 py-1 text-xs bg-[#0d9488] text-white rounded hover:bg-[#0f766e]" data-comment-id="' + cid2 + '" data-comment-text="' + msg + '" data-post-message="' + postMessage + '">비공개 답글(DM)</button></div></div>';
+                }).join('');
+                function attachAiReply(btn, isPrivate) {
+                  var commentId = btn.dataset.commentId;
+                  var commentText = btn.dataset.commentText || '';
+                  var postMsg = btn.dataset.postMessage || '';
+                  if (!commentId) return;
+                  btn.disabled = true;
+                  btn.textContent = '생성 중...';
+                  var key = (apiKeyInput && apiKeyInput.value) ? apiKeyInput.value.trim() : (localStorage.getItem(STORAGE_KEY) || '');
+                  var url = isPrivate ? (apiBase + '/api/sns/comments/ai-private-reply') : (apiBase + '/api/sns/comments/ai-reply');
+                  fetch(url, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ connection_id: cid, comment_id: commentId, comment_text: commentText, post_message: postMsg, gemini_api_key: key || undefined })
+                  }).then(function(res) { return res.json().catch(function() { return {}; }).then(function(result) {
+                    if (res.ok && result.ok) { btn.textContent = isPrivate ? 'DM 완료' : '답글 완료'; } else { alert(result.detail || result.error || '실패'); btn.textContent = isPrivate ? '비공개 답글(DM)' : 'AI 답글'; btn.disabled = false; }
+                  }); }).catch(function(e) { alert(e.message || e); btn.textContent = isPrivate ? '비공개 답글(DM)' : 'AI 답글'; btn.disabled = false; });
+                }
+                commentsList.querySelectorAll('.sns-ai-reply-btn').forEach(function(b) {
+                  b.addEventListener('click', function() { attachAiReply(b, false); });
+                });
+                commentsList.querySelectorAll('.sns-ai-dm-btn').forEach(function(b) {
+                  b.addEventListener('click', function() { attachAiReply(b, true); });
+                });
+              } catch (_) { commentsList.innerHTML = '댓글 불러오기 실패'; }
+            });
+          });
+        } catch (e) { list.innerHTML = '게시물 불러오기 실패'; }
+      });
+    })();
     if (localStorage.getItem(STORAGE_KEY)) {
       apiKeyInput.value = localStorage.getItem(STORAGE_KEY);
       const repInput = document.getElementById('replicate-token-input');
@@ -1180,6 +1449,8 @@ ADDITION MODE: Output NEW overlay. If user wants "다른 버전/비교/추가" w
     const homeView = document.getElementById('home-view');
     const shoppingView = document.getElementById('shopping-view');
     const snsFlowView = document.getElementById('sns-flow-view');
+    const settingsView = document.getElementById('settings-view');
+    const snsSettingsView = document.getElementById('sns-settings-view');
     const contextualSidebar = document.getElementById('contextual-sidebar');
     let snsFlowCurrentStep = 1;
     let snsFlowState = { ideas: [], selectedIdea: null, caption: '', hashtags: '' };
@@ -1200,13 +1471,48 @@ ADDITION MODE: Output NEW overlay. If user wants "다른 버전/비교/추가" w
         homeView?.classList.remove('hidden');
         shoppingView?.classList.add('hidden');
         snsFlowView?.classList.add('hidden');
+        settingsView?.classList.add('hidden');
         canvasView?.classList.add('hidden');
         aiChatView?.classList.add('hidden');
         contextualSidebar?.classList.add('sidebar-collapsed');
         document.getElementById('task-list-overlay')?.classList.add('hidden');
         document.getElementById('nav-sidebar-toggle')?.setAttribute('title', '작업 목록 펼치기');
+        snsSettingsView?.classList.add('hidden');
         const btn = document.getElementById('nav-home');
         if (btn) { btn.classList.add('nav-item-active'); btn.classList.remove('text-gray-400'); }
+      } else if (menu === 'settings') {
+        sidebarCollapsed = true;
+        homeView?.classList.add('hidden');
+        shoppingView?.classList.add('hidden');
+        snsFlowView?.classList.add('hidden');
+        canvasView?.classList.add('hidden');
+        aiChatView?.classList.add('hidden');
+        snsSettingsView?.classList.add('hidden');
+        settingsView?.classList.remove('hidden');
+        contextualSidebar?.classList.add('sidebar-collapsed');
+        document.getElementById('task-list-overlay')?.classList.add('hidden');
+        document.getElementById('nav-sidebar-toggle')?.setAttribute('title', '작업 목록 펼치기');
+        const btn = document.getElementById('api-settings-btn');
+        if (btn) { btn.classList.add('nav-item-active'); btn.classList.remove('text-gray-400'); }
+        document.getElementById('nav-sns-settings')?.classList.remove('nav-item-active');
+        document.getElementById('nav-sns-settings')?.classList.add('text-gray-400');
+      } else if (menu === 'sns-settings') {
+        sidebarCollapsed = true;
+        homeView?.classList.add('hidden');
+        shoppingView?.classList.add('hidden');
+        snsFlowView?.classList.add('hidden');
+        canvasView?.classList.add('hidden');
+        aiChatView?.classList.add('hidden');
+        settingsView?.classList.add('hidden');
+        snsSettingsView?.classList.remove('hidden');
+        contextualSidebar?.classList.add('sidebar-collapsed');
+        document.getElementById('task-list-overlay')?.classList.add('hidden');
+        document.getElementById('nav-sidebar-toggle')?.setAttribute('title', '작업 목록 펼치기');
+        const btn = document.getElementById('nav-sns-settings');
+        if (btn) { btn.classList.add('nav-item-active'); btn.classList.remove('text-gray-400'); }
+        document.getElementById('api-settings-btn')?.classList.remove('nav-item-active');
+        document.getElementById('api-settings-btn')?.classList.add('text-gray-400');
+        if (typeof window.loadSnsConnections === 'function') window.loadSnsConnections();
       } else if (menu === 'chat') {
         selectedFolderId = null;
         sidebarCollapsed = false;
@@ -1214,6 +1520,8 @@ ADDITION MODE: Output NEW overlay. If user wants "다른 버전/비교/추가" w
         homeView?.classList.add('hidden');
         shoppingView?.classList.add('hidden');
         snsFlowView?.classList.add('hidden');
+        settingsView?.classList.add('hidden');
+        snsSettingsView?.classList.add('hidden');
         canvasView?.classList.add('hidden');
         aiChatView?.classList.remove('hidden');
         contextualSidebar?.classList.remove('sidebar-collapsed');
@@ -1237,6 +1545,8 @@ ADDITION MODE: Output NEW overlay. If user wants "다른 버전/비교/추가" w
         document.getElementById('nav-sidebar-toggle')?.setAttribute('title', '작업 목록 펼치기');
         homeView?.classList.add('hidden');
         snsFlowView?.classList.add('hidden');
+        settingsView?.classList.add('hidden');
+        snsSettingsView?.classList.add('hidden');
         canvasView?.classList.add('hidden');
         aiChatView?.classList.add('hidden');
         shoppingView?.classList.remove('hidden');
@@ -1250,6 +1560,8 @@ ADDITION MODE: Output NEW overlay. If user wants "다른 버전/비교/추가" w
         document.getElementById('nav-sidebar-toggle')?.setAttribute('title', '작업 목록 펼치기');
         homeView?.classList.add('hidden');
         shoppingView?.classList.add('hidden');
+        settingsView?.classList.add('hidden');
+        snsSettingsView?.classList.add('hidden');
         canvasView?.classList.add('hidden');
         aiChatView?.classList.add('hidden');
         snsFlowView?.classList.remove('hidden');
@@ -1264,8 +1576,11 @@ ADDITION MODE: Output NEW overlay. If user wants "다른 버전/비교/추가" w
         homeView?.classList.add('hidden');
         shoppingView?.classList.add('hidden');
         snsFlowView?.classList.add('hidden');
+        settingsView?.classList.add('hidden');
         document.getElementById('sidebar-task-list')?.classList.add('hidden');
         document.getElementById('sidebar-design-prompt')?.classList.remove('hidden');
+        settingsView?.classList.add('hidden');
+        snsSettingsView?.classList.add('hidden');
         contextualSidebar?.classList.remove('sidebar-collapsed');
         canvasHistory = menu === 'image' ? taskListImage : (menu === 'video' ? taskListVideo : taskListCardnews);
         renderCanvasHistory();
@@ -1319,6 +1634,11 @@ ADDITION MODE: Output NEW overlay. If user wants "다른 버전/비교/추가" w
           }
         }
         if (promptInput) promptInput.placeholder = menu === 'cardnews' ? '카드뉴스 주제를 입력하세요 (예: 건강한 아침 식사 습관, 5장으로 만들어줘)' : (menu === 'video' ? '제품명, 배경 분위기, 행동(예: 제품 사용하는 모습)을 입력하세요' : '디자인 요청을 입력하세요');
+        const attachmentPreview = document.getElementById('attachment-preview');
+        if (attachmentPreview && (menu === 'image' || menu === 'cardnews')) {
+          const hasImageAttachments = pendingAttachments.some(a => a.type?.startsWith('image/'));
+          attachmentPreview.classList.toggle('hidden', !hasImageAttachments);
+        }
         renderDesignRulesPanel();
         renderFolderItemsInCanvas();
       }
@@ -1401,15 +1721,23 @@ ADDITION MODE: Output NEW overlay. If user wants "다른 버전/비교/추가" w
     document.getElementById('nav-home')?.addEventListener('click', () => switchView('home'));
     document.getElementById('nav-logo')?.addEventListener('click', (e) => { e.preventDefault(); switchView('home'); });
     document.body.addEventListener('click', (e) => {
-      const btn = e.target.closest('.home-view-icon-btn[data-home-nav]');
-      if (!btn) return;
-      const nav = btn.getAttribute('data-home-nav');
-      if (nav) switchView(nav);
+      const homeView = document.getElementById('home-view');
+      if (!homeView?.contains(e.target)) return;
+      const card = e.target.closest('.home-view-card[data-home-nav]');
+      const subBtn = e.target.closest('.home-view-create-sub button[data-home-nav]');
+      if (subBtn) {
+        const nav = subBtn.getAttribute('data-home-nav');
+        if (nav) switchView(nav);
+        return;
+      }
+      if (card) {
+        const nav = card.getAttribute('data-home-nav');
+        if (nav && nav !== 'create') switchView(nav);
+      }
     });
 
     // SNS 원스톱: 단계 전환 + 기획/캡션 생성
     (function initSnsFlow() {
-      const SNS_SCHEDULE_KEY = 'wava_sns_schedule_list';
       window.renderSnsFlowStep = function(step) {
         snsFlowCurrentStep = step;
         document.querySelectorAll('.sns-step-btn').forEach(b => {
@@ -1421,22 +1749,120 @@ ADDITION MODE: Output NEW overlay. If user wants "다른 버전/비교/추가" w
         const step2Sel = document.getElementById('sns-step2-selected');
         if (step2Sel && snsFlowState.selectedIdea) step2Sel.textContent = snsFlowState.selectedIdea;
         if (step === 4) {
-          const list = document.getElementById('sns-schedule-list');
-          if (list) {
-            try {
-              const arr = JSON.parse(localStorage.getItem(SNS_SCHEDULE_KEY) || '[]');
-              list.innerHTML = arr.length ? arr.map((x, i) => `<div class="flex justify-between items-center p-2 rounded-lg bg-white border border-gray-200"><span>${(x.datetime || '').slice(0, 16)} ${(x.caption || '').slice(0, 30)}…</span><button type="button" class="sns-schedule-del text-red-600 text-xs" data-i="${i}">삭제</button></div>`).join('') : '<p class="text-gray-500">예약된 항목이 없습니다.</p>';
-              list.querySelectorAll('.sns-schedule-del').forEach(btn => btn.addEventListener('click', function() {
-                const idx = parseInt(this.dataset.i, 10);
-                const arr = JSON.parse(localStorage.getItem(SNS_SCHEDULE_KEY) || '[]');
-                arr.splice(idx, 1);
-                localStorage.setItem(SNS_SCHEDULE_KEY, JSON.stringify(arr));
-                window.renderSnsFlowStep(4);
-              }));
-            } catch (_) { list.innerHTML = '<p class="text-gray-500">예약된 항목이 없습니다.</p>'; }
-          }
+          if (typeof window.refreshSnsScheduleList === 'function') window.refreshSnsScheduleList();
+          if (typeof window.refreshSnsPublishAccounts === 'function') window.refreshSnsPublishAccounts();
+          if (typeof window.refreshSnsSuggestedTimes === 'function') window.refreshSnsSuggestedTimes();
         }
       };
+      window.refreshSnsSuggestedTimes = async function() {
+        var el = document.getElementById('sns-suggested-times');
+        var reasonEl = document.getElementById('sns-suggested-reason');
+        var dtEl = document.getElementById('sns-schedule-datetime');
+        var sel = document.getElementById('sns-publish-connection-id');
+        if (!el) return;
+        var apiBase = (location.protocol === 'http:' || location.protocol === 'https:') ? location.origin : 'http://localhost:8000';
+        try {
+          var cid = (sel && sel.value ? String(sel.value).trim() : '');
+          var url = apiBase + '/api/sns/schedule/suggested-times' + (cid ? ('?connection_id=' + encodeURIComponent(cid)) : '');
+          var r = await fetch(url);
+          var data = await r.json().catch(function() { return {}; });
+          var suggested = data.suggested || [];
+          var reason = data.reason || '';
+          if (reasonEl) reasonEl.textContent = reason;
+          if (!suggested.length) { el.innerHTML = ''; return; }
+          el.innerHTML = suggested.map(function(s) {
+            var dt = (s.datetime || '').slice(0, 16);
+            var label = (s.label || dt).replace(/</g, '&lt;');
+            return '<button type="button" class="sns-suggested-time-btn px-3 py-1.5 rounded-lg text-sm bg-gray-100 hover:bg-gray-200 text-gray-800" data-datetime="' + (dt.replace(/"/g, '&quot;')) + '">' + label + '</button>';
+          }).join('');
+          el.querySelectorAll('.sns-suggested-time-btn').forEach(function(btn) {
+            btn.addEventListener('click', function() {
+              var dt = btn.dataset.datetime;
+              if (dt && dtEl) dtEl.value = dt;
+            });
+          });
+        } catch (_) { el.innerHTML = ''; if (reasonEl) reasonEl.textContent = ''; }
+      };
+      window.refreshSnsScheduleList = async function() {
+        const list = document.getElementById('sns-schedule-list');
+        if (!list) return;
+        const apiBase = (location.protocol === 'http:' || location.protocol === 'https:') ? location.origin : 'http://localhost:8000';
+        list.innerHTML = '<p class="text-gray-500">불러오는 중...</p>';
+        try {
+          const r = await fetch(apiBase + '/api/sns/schedule?include_posted=true');
+          const data = await r.json().catch(() => ({}));
+          const arr = data.items || [];
+          if (arr.length === 0) {
+            list.innerHTML = '<p class="text-gray-500">예약된 항목이 없습니다. 저장하면 지정 시간에 자동 발행됩니다.</p>';
+          } else {
+            list.innerHTML = arr.map(function(x) {
+              const at = (x.scheduled_at || '').slice(0, 16).replace('T', ' ');
+              const status = x.status || 'pending';
+              const statusLabel = status === 'posted' ? ' (발행됨)' : (status === 'failed' ? ' (실패)' : '');
+              const cap = (x.caption || '').slice(0, 28);
+              const id = (x.id || '').replace(/"/g, '&quot;');
+              const canDel = status === 'pending';
+              return '<div class="flex justify-between items-center p-2 rounded-lg bg-white border border-gray-200"><span>' + at + statusLabel + ' ' + cap + '…</span>' + (canDel ? '<button type="button" class="sns-schedule-del text-red-600 text-xs" data-id="' + id + '">삭제</button>' : '') + '</div>';
+            }).join('');
+            list.querySelectorAll('.sns-schedule-del').forEach(function(btn) {
+              btn.addEventListener('click', async function() {
+                const id = btn.dataset.id;
+                if (!id || !confirm('이 예약을 삭제할까요?')) return;
+                try {
+                  const res = await fetch(apiBase + '/api/sns/schedule/' + encodeURIComponent(id), { method: 'DELETE' });
+                  if (res.ok) window.refreshSnsScheduleList(); else alert('삭제 실패');
+                } catch (e) { alert('삭제 실패'); }
+              });
+            });
+          }
+        } catch (_) {
+          list.innerHTML = '<p class="text-gray-500">예약 목록을 불러올 수 없습니다. (서버 연결 확인)</p>';
+        }
+      };
+      window.refreshSnsPublishAccounts = async function() {
+        const sel = document.getElementById('sns-publish-connection-id');
+        const btn = document.getElementById('sns-publish-now-btn');
+        if (!sel) return;
+        const ytWrap = document.getElementById('sns-youtube-video-url-wrap');
+        const apiBase = (location.protocol === 'http:' || location.protocol === 'https:') ? location.origin : 'http://localhost:8000';
+        sel.innerHTML = '<option value="">불러오는 중...</option>';
+        if (btn) btn.disabled = true;
+        var conns = [];
+        try {
+          const r = await fetch(apiBase + '/api/sns/connections');
+          const data = await r.json().catch(() => ({}));
+          conns = data.connections || [];
+          if (conns.length === 0) {
+            sel.innerHTML = '<option value="">연동된 계정 없음 (설정에서 연결)</option>';
+          } else {
+            sel.innerHTML = conns.map(function(c) {
+              const id = (c.id || '').replace(/"/g, '&quot;');
+              const nm = (c.name || c.platform || c.id || '').replace(/</g, '&lt;');
+              const pf = (c.platform || '').replace(/</g, '&lt;').replace(/"/g, '&quot;');
+              return '<option value="' + id + '" data-platform="' + pf + '">' + nm + ' (' + pf + ')</option>';
+            }).join('');
+          }
+        } catch (_) {
+          sel.innerHTML = '<option value="">목록 불러오기 실패</option>';
+        }
+        if (btn) btn.disabled = conns.length === 0;
+        try {
+          const pf = sel?.selectedOptions?.[0]?.dataset?.platform || '';
+          if (ytWrap) ytWrap.classList.toggle('hidden', pf !== 'youtube');
+        } catch (_) { if (ytWrap) ytWrap.classList.add('hidden'); }
+        // 계정 목록이 바뀌면 추천 시간도 갱신
+        if (typeof window.refreshSnsSuggestedTimes === 'function') window.refreshSnsSuggestedTimes();
+      };
+      // Step4에서 계정 선택을 바꾸면 추천 시간도 즉시 갱신
+      document.getElementById('sns-publish-connection-id')?.addEventListener('change', () => {
+        if (typeof window.refreshSnsSuggestedTimes === 'function') window.refreshSnsSuggestedTimes();
+        const ytWrap = document.getElementById('sns-youtube-video-url-wrap');
+        try {
+          const sel = document.getElementById('sns-publish-connection-id');
+          const pf = sel?.selectedOptions?.[0]?.dataset?.platform || '';
+          if (ytWrap) ytWrap.classList.toggle('hidden', pf !== 'youtube');
+        } catch (_) { if (ytWrap) ytWrap.classList.add('hidden'); }
+      });
       document.querySelectorAll('.sns-step-btn').forEach(btn => {
         btn.addEventListener('click', () => { const s = parseInt(btn.dataset.snsStep, 10); if (s) window.renderSnsFlowStep(s); });
       });
@@ -1475,6 +1901,15 @@ ADDITION MODE: Output NEW overlay. If user wants "다른 버전/비교/추가" w
       });
       document.getElementById('sns-goto-cardnews-btn')?.addEventListener('click', () => {
         if (snsFlowState.selectedIdea) { switchView('cardnews'); if (promptInput) { promptInput.value = snsFlowState.selectedIdea + '\n\n위 주제로 카드뉴스 5장 만들어줘'; promptInput.dispatchEvent(new Event('input', { bubbles: true })); } }
+      });
+      document.getElementById('sns-goto-video-btn')?.addEventListener('click', () => {
+        if (snsFlowState.selectedIdea) {
+          switchView('video');
+          if (promptInput) {
+            promptInput.value = snsFlowState.selectedIdea + '\n\n위 주제로 10~15초 분량의 숏폼 광고 영상을 만들어줘. 장면은 3~5컷으로 구성하고, 자막 문구와 BGM 분위기도 제안해줘.';
+            promptInput.dispatchEvent(new Event('input', { bubbles: true }));
+          }
+        }
       });
       document.getElementById('sns-caption-generate-btn')?.addEventListener('click', async () => {
         const loadingEl = document.getElementById('sns-caption-loading');
@@ -1516,17 +1951,67 @@ ADDITION MODE: Output NEW overlay. If user wants "다른 버전/비교/추가" w
         const text = (captionEl?.value || '') + '\n\n' + (hashtagsEl?.value || '');
         if (text.trim()) navigator.clipboard.writeText(text.trim()).then(() => alert('복사되었습니다.'));
       });
-      document.getElementById('sns-schedule-save-btn')?.addEventListener('click', () => {
+      document.getElementById('sns-schedule-save-btn')?.addEventListener('click', async () => {
         const dtEl = document.getElementById('sns-schedule-datetime');
+        const sel = document.getElementById('sns-publish-connection-id');
         const datetime = dtEl?.value || '';
+        const connectionId = sel?.value?.trim();
         if (!datetime) { alert('예약 일시를 선택해주세요.'); return; }
+        if (!connectionId) { alert('발행할 계정을 선택해주세요.'); return; }
+        const platform = sel?.selectedOptions?.[0]?.dataset?.platform || '';
+        const ytVideoUrl = (document.getElementById('sns-youtube-video-url')?.value || '').trim();
+        if (platform === 'youtube' && !ytVideoUrl) { alert('YouTube 예약 발행은 업로드할 영상 URL이 필요합니다.'); return; }
+        const captionEl = document.getElementById('sns-caption-text');
+        const hashtagsEl = document.getElementById('sns-hashtags');
+        const caption = (captionEl?.value || '').trim() || snsFlowState.caption || '';
+        const hashtags = (hashtagsEl?.value || '').trim() || snsFlowState.hashtags || '';
+        const text = (caption + (caption && hashtags ? '\n\n' : '') + hashtags).trim();
+        if (!text) { alert('캡션을 입력하거나 3단계에서 생성해주세요.'); return; }
+        const apiBase = (location.protocol === 'http:' || location.protocol === 'https:') ? location.origin : 'http://localhost:8000';
+        const scheduledAt = datetime.length === 16 ? datetime + ':00' : datetime;
         try {
-          const arr = JSON.parse(localStorage.getItem(SNS_SCHEDULE_KEY) || '[]');
-          arr.push({ datetime, caption: snsFlowState.caption || '', hashtags: snsFlowState.hashtags || '', idea: snsFlowState.selectedIdea || '' });
-          localStorage.setItem(SNS_SCHEDULE_KEY, JSON.stringify(arr));
+          const res = await fetch(apiBase + '/api/sns/schedule', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ connection_id: connectionId, caption: text, scheduled_at: scheduledAt, idea: snsFlowState.selectedIdea || null, video_url: platform === 'youtube' ? ytVideoUrl : undefined })
+          });
+          if (!res.ok) { const d = await res.json().catch(() => ({})); alert(d.detail || '저장 실패'); return; }
           if (dtEl) dtEl.value = '';
-          window.renderSnsFlowStep(4);
-        } catch (e) { alert('저장 실패'); }
+          window.refreshSnsScheduleList();
+        } catch (e) { alert('저장 실패: ' + (e.message || e)); }
+      });
+      document.getElementById('sns-publish-now-btn')?.addEventListener('click', async () => {
+        const sel = document.getElementById('sns-publish-connection-id');
+        const connectionId = sel?.value?.trim();
+        if (!connectionId) { alert('발행할 계정을 선택해주세요. 설정에서 SNS를 연동한 뒤 4단계에서 계정을 선택하세요.'); return; }
+        const platform = sel?.selectedOptions?.[0]?.dataset?.platform || '';
+        const ytVideoUrl = (document.getElementById('sns-youtube-video-url')?.value || '').trim();
+        if (platform === 'youtube' && !ytVideoUrl) { alert('YouTube 발행은 업로드할 영상 URL이 필요합니다.'); return; }
+        const captionEl = document.getElementById('sns-caption-text');
+        const hashtagsEl = document.getElementById('sns-hashtags');
+        const caption = (captionEl?.value || '').trim() || snsFlowState.caption || '';
+        const hashtags = (hashtagsEl?.value || '').trim() || snsFlowState.hashtags || '';
+        const text = (caption + (caption && hashtags ? '\n\n' : '') + hashtags).trim();
+        if (!text) { alert('캡션을 입력하거나 3단계에서 캡션을 생성해주세요.'); return; }
+        const apiBase = (location.protocol === 'http:' || location.protocol === 'https:') ? location.origin : 'http://localhost:8000';
+        const btn = document.getElementById('sns-publish-now-btn');
+        if (btn) { btn.disabled = true; btn.textContent = '발행 중...'; }
+        try {
+          const res = await fetch(apiBase + '/api/sns/post', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ connection_id: connectionId, caption: text, video_url: platform === 'youtube' ? ytVideoUrl : undefined })
+          });
+          const data = await res.json().catch(() => ({}));
+          if (res.ok && data.ok) {
+            alert('선택한 계정에 발행되었습니다.');
+          } else {
+            alert(data.detail || data.error || '발행 실패. 설정에서 연동 계정을 확인하세요.');
+          }
+        } catch (e) {
+          alert('발행 요청 실패: ' + (e.message || e) + '. 서버가 실행 중인지, 연동이 되어 있는지 확인하세요.');
+        }
+        if (btn) { btn.disabled = false; btn.textContent = '지금 발행'; }
       });
       document.querySelectorAll('.sns-step-btn').forEach(b => { b.classList.add('bg-gray-100', 'text-gray-600'); });
     })();
@@ -1556,7 +2041,7 @@ ADDITION MODE: Output NEW overlay. If user wants "다른 버전/비교/추가" w
         if (banner) banner.classList.toggle('hidden', !!hasKeys);
       };
       document.getElementById('shopping-open-api-btn')?.addEventListener('click', () => {
-        document.getElementById('api-settings-popover')?.classList.remove('hidden');
+        switchView('settings');
       });
 
       const input = document.getElementById('shopping-image-url-input');
@@ -1661,7 +2146,7 @@ ADDITION MODE: Output NEW overlay. If user wants "다른 버전/비교/추가" w
         if (!hasKeys) {
           if (loading) loading.classList.add('hidden');
           showShoppingError('실제 썸네일을 생성하려면 Gemini API Key와 Replicate 토큰이 필요합니다.\n\n왼쪽 하단 설정(⚙️) → API 설정에서 입력 후 "저장"을 눌러주세요.');
-          document.getElementById('api-settings-popover')?.classList.remove('hidden');
+          switchView('settings');
           const banner = document.getElementById('shopping-api-banner');
           if (banner) banner.classList.remove('hidden');
           return;
@@ -1952,6 +2437,7 @@ ADDITION MODE: Output NEW overlay. If user wants "다른 버전/비교/추가" w
     document.getElementById('nav-cardnews')?.addEventListener('click', () => switchView('cardnews'));
     document.getElementById('nav-video')?.addEventListener('click', () => switchView('video'));
     document.getElementById('nav-shopping')?.addEventListener('click', () => switchView('shopping'));
+    document.getElementById('nav-sns-flow')?.addEventListener('click', () => switchView('sns-flow'));
 
     function setVideoModeUi(isVideo) {
       // 이미지/HTML 편집/조작 관련 UI 숨김
@@ -1959,7 +2445,8 @@ ADDITION MODE: Output NEW overlay. If user wants "다른 버전/비교/추가" w
         document.getElementById(id)?.classList.toggle('hidden', !!isVideo);
       });
       document.getElementById('design-edit-panel')?.classList.toggle('hidden', !!isVideo);
-      document.getElementById('loading-status-bar')?.classList.toggle('hidden', !!isVideo);
+      const loadingBarEl = document.getElementById('loading-status-bar');
+      if (loadingBarEl) { if (isVideo) loadingBarEl.classList.add('hidden'); }
       document.getElementById('attachment-preview')?.classList.toggle('hidden', !!isVideo);
       const dz = document.getElementById('attachment-drop-zone');
       if (dz) {
@@ -2535,12 +3022,25 @@ ADDITION MODE: Output NEW overlay. If user wants "다른 버전/비교/추가" w
       }
       try {
         const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${apiKey}`;
-        let sysPrompt = `당신은 광고·카드뉴스 디자인 전문가입니다. 사용자가 디자인 가이드, 컨셉, 컬러 구성, 레이아웃 등을 요청하면 채팅 탭과 동일하게 **상세하고 구조화된 답변**을 제공하세요.
-- 디자인 가이드 요청 시: ##, ### 제목을 활용한 섹션 구분, 컨셉·컬러·그래픽 요소·카드별 구성 등을 구체적으로 서술
-- 마크다운 형식(##, ###, **굵게**) 사용 권장
-- 요청 내용에 맞게 충분히 상세하게 답변 (간단한 1~3문장이 아닌, 가이드 문서 수준)`;
-        if (askConfirmation) {
-          sysPrompt += `\n\n마지막 문장은 반드시 "이렇게 생성해드릴까요?"로 끝내세요.`;
+        let sysPrompt;
+        if (activeMenu === 'video' && askConfirmation) {
+          sysPrompt = `당신은 숏폼·광고 영상 기획 전문가입니다. 사용자 요청을 **그대로 복사·요약하지 말고**, 당신이 영상 관점에서 해석하고 보완한 내용으로 답하세요.
+
+규칙:
+- 사용자가 말한 내용을 "~해주세요라고 하셨습니다" 식으로 반복하지 말 것.
+- 사용자 의도를 파악한 뒤, **당신이 제안하는** 영상 구성을 구체적으로 서술할 것. (예: 총 길이, 장면 수, 컷별 내용, 분위기·BGM·자막 포인트 등)
+- ##, ### 로 섹션을 나누고, 마크다운(**굵게** 등)을 사용해 읽기 쉽게 작성할 것.
+- 전문가로서 "이렇게 만들면 좋겠다"는 식의 **당신의 구체안**을 2~4문단 정도로 제시한 뒤, 마지막에만 "이렇게 생성해드릴까요?"로 끝낼 것.`;
+        } else if (askConfirmation) {
+          sysPrompt = `당신은 광고·카드뉴스 디자인 전문가입니다. 사용자 요청을 **그대로 복사·요약하지 말고**, 당신이 디자인 관점에서 해석하고 보완한 내용으로 답하세요.
+
+규칙:
+- 사용자가 말한 내용을 "~해주세요라고 하셨습니다" 식으로 반복하지 말 것.
+- 사용자 의도를 파악한 뒤, **당신이 제안하는** 컨셉·톤·색감·레이아웃·타이포·카드별 구성 등을 구체적으로 서술할 것.
+- ##, ### 로 섹션을 나누고, 마크다운(**굵게** 등)을 사용해 읽기 쉽게 작성할 것.
+- 전문가로서 "이렇게 만들면 좋겠다"는 식의 **당신의 구체안**을 2~4문단 정도로 제시한 뒤, 마지막에만 "이렇게 생성해드릴까요?"로 끝낼 것.`;
+        } else {
+          sysPrompt = `당신은 광고·카드뉴스 디자인 전문가입니다. 사용자 요청을 바탕으로 **당신이 디자인 관점에서 해석·보완한** 가이드를 제공하세요. 사용자 말을 그대로 복사하지 말고, 컨셉·컬러·레이아웃 등을 구체적으로 제안하세요. ##, ###, **굵게** 등 마크다운 사용.`;
         }
         const historyText = chatHistory.length > 0
           ? chatHistory.map(m => `${m.role === 'user' ? '사용자' : 'AI'}: ${m.text}`).join('\n') + '\n\n사용자: ' + prompt
@@ -3196,7 +3696,7 @@ ADDITION MODE: Output NEW overlay. If user wants "다른 버전/비교/추가" w
       return msg ? `[Gemini API] ${codeStr}: ${msg}` : `[Gemini API] ${codeStr}`;
     }
 
-    const GEMINI_IMAGE_FALLBACK = 'data:image/svg+xml,' + encodeURIComponent('<svg xmlns="http://www.w3.org/2000/svg" width="400" height="400"><rect fill="#e5e7eb" width="400" height="400"/><text x="50%" y="50%" fill="#9ca3af" font-family="sans-serif" font-size="14" text-anchor="middle" dy=".3em">Gemini 이미지 생성 필요</text></svg>');
+    const GEMINI_IMAGE_FALLBACK = 'data:image/svg+xml,' + encodeURIComponent('<svg xmlns="http://www.w3.org/2000/svg" width="400" height="400"><rect fill="#e5e7eb" width="400" height="400"/><text x="50%" y="50%" fill="#9ca3af" font-family="\'Pretendard\', sans-serif" font-size="14" text-anchor="middle" dy=".3em">Gemini 이미지 생성 필요</text></svg>');
     const NANO_BANANA_PRO = 'gemini-3-pro-image-preview';
     const NANO_BANANA = 'gemini-2.5-flash-image';
     const IMAGE_MODELS_FALLBACK = [NANO_BANANA, 'gemini-2.0-flash-preview-image-generation'];
@@ -4183,29 +4683,42 @@ ${userPrompt}
       const apiKey = apiKeyInput.value.trim() || localStorage.getItem(STORAGE_KEY);
       if (!apiKey) { alert('Gemini API Key를 입력해주세요.'); return; }
 
-      // 영상 모드: Gemini "디자인 가이드/확인" 응답을 절대 만들지 않고,
-      // 입력 텍스트로 최종 프롬프트(규칙 포함)를 만들어 백엔드 Job 생성만 시도한다.
+      // 영상 모드: 확인 단계 있음. skipConfirmation이면 바로 Job 생성, 아니면 AI가 해석·제안 후 "이렇게 생성해드릴까요?" 대기.
       if (activeMenu === 'video') {
         const raw = (prompt || '').trim();
         if (!raw) return;
-        // UI에 사용자가 입력한 내용을 사용자 메시지로 남김
+        if (options.skipConfirmation) {
+          addMessage(raw, true, []);
+          chatHistory.push({ role: 'user', text: raw });
+          if (chatHistory.length > 20) chatHistory = chatHistory.slice(-20);
+          const effectivePrompt = buildPromptWithRules(generateVideoPrompt({ prompt: raw, product: raw }));
+          try {
+            const created = await createVideoJob(effectivePrompt);
+            currentVideoJobId = created?.id || null;
+            chatHistory.push({ role: 'model', text: `[영상] 작업이 대기열에 등록되었습니다.\n- Job ID: ${currentVideoJobId}\n- 상태: ${created?.status || 'pending'}\n\n(5초마다 상태를 확인합니다)` });
+            if (chatHistory.length > 20) chatHistory = chatHistory.slice(-20);
+            renderDesignChatMessages();
+            saveCanvasHistory();
+            startVideoPolling(currentVideoJobId);
+          } catch (e) {
+            chatHistory.push({ role: 'model', text: `[영상] 백엔드 연결이 필요합니다.\n${e?.message || e}` });
+            if (chatHistory.length > 20) chatHistory = chatHistory.slice(-20);
+            renderDesignChatMessages();
+          }
+          return;
+        }
+        if (isConfirmationRequest(prompt) && pendingDesignPrompt) {
+          const stored = pendingDesignPrompt;
+          pendingDesignPrompt = null;
+          addMessage(prompt, true, []);
+          chatHistory.push({ role: 'user', text: prompt });
+          return sendToGemini(stored.prompt, { ...stored.options, attachments: stored.attachments || [], skipConfirmation: true });
+        }
         addMessage(raw, true, []);
         chatHistory.push({ role: 'user', text: raw });
         if (chatHistory.length > 20) chatHistory = chatHistory.slice(-20);
-        const effectivePrompt = buildPromptWithRules(generateVideoPrompt({ prompt: raw, product: raw }));
-        try {
-          const created = await createVideoJob(effectivePrompt);
-          currentVideoJobId = created?.id || null;
-          chatHistory.push({ role: 'model', text: `[영상] 작업이 대기열에 등록되었습니다.\n- Job ID: ${currentVideoJobId}\n- 상태: ${created?.status || 'pending'}\n\n(5초마다 상태를 확인합니다)` });
-          if (chatHistory.length > 20) chatHistory = chatHistory.slice(-20);
-          renderDesignChatMessages();
-          saveCanvasHistory();
-          startVideoPolling(currentVideoJobId);
-        } catch (e) {
-          chatHistory.push({ role: 'model', text: `[영상] 백엔드 연결이 필요합니다.\n${e?.message || e}` });
-          if (chatHistory.length > 20) chatHistory = chatHistory.slice(-20);
-          renderDesignChatMessages();
-        }
+        pendingDesignPrompt = { prompt: raw, attachments: [], options: { ...options, skipConfirmation: true } };
+        addGeminiConversationalResponse(raw, apiKey, { isDesignRequest: true, askConfirmation: true });
         return;
       }
 
