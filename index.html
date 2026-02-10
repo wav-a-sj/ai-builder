@@ -25,8 +25,12 @@
     #attachment-drop-zone.drag-over, #ai-chat-drop-zone.drag-over, #folder-view-drop-zone.drag-over { background: rgba(59, 130, 246, 0.08); outline: 2px dashed #3b82f6; outline-offset: -2px; }
     .scrollbar-hide { scrollbar-width: none; -ms-overflow-style: none; }
     .scrollbar-hide::-webkit-scrollbar { display: none; }
-    #chat-container { font-size: 13px; line-height: 1.5; background-color: #ffffff !important; }
-    #chat-container .inline-block { font-size: inherit; }
+    #chat-container { font-size: 13px; line-height: 1.5; background-color: #ffffff !important; overflow-y: auto; overflow-x: hidden; }
+    #chat-container .inline-block { font-size: inherit; word-break: break-word; overflow-wrap: break-word; white-space: pre-wrap; max-width: 100%; overflow: visible; }
+    #ai-chat-messages-wrap { overflow-y: auto; overflow-x: hidden; min-height: 0; }
+    #ai-chat-messages { word-break: break-word; overflow-wrap: break-word; }
+    #ai-chat-messages .rounded-2xl { word-break: break-word; overflow-wrap: break-word; white-space: pre-wrap; max-width: 100%; overflow: visible; }
+    #ai-chat-messages .inline-block { white-space: pre-wrap; max-width: 100%; overflow: visible; }
     .chat-bubble-user { background-color: #E6EEF3 !important; color: #1f2937; }
     .nav-item-active { background: rgba(44, 150, 255, 0.2); color: #2C96FF; border-left: 3px solid #2C96FF; }
     .nav-item-active:hover { background: rgba(44, 150, 255, 0.25); }
@@ -189,6 +193,9 @@
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 10v8M15 10v8"/>
             </svg>
           </button>
+          <button id="nav-sns-flow" class="p-2.5 rounded-lg text-gray-400 hover:text-white hover:bg-white/10 transition-colors" title="SNS 원스톱" data-menu="sns-flow">
+            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
+          </button>
         </div>
         <!-- 설정 버튼 (최하단) -->
         <div class="mt-auto pt-2 border-t border-gray-600/50 w-full flex justify-center">
@@ -258,7 +265,7 @@
             </button>
           </div>
           <select id="model-select" class="hidden"><option value="gemini-2.5-pro">High Quality Mode</option></select>
-          <div id="chat-container" class="flex-1 overflow-y-auto p-4 space-y-4 min-h-0 bg-white">
+          <div id="chat-container" class="flex-1 overflow-y-auto overflow-x-hidden p-4 pb-8 space-y-4 min-h-0 bg-white">
           </div>
           <div id="loading-status-bar" class="hidden shrink-0 px-4 py-2.5 bg-blue-50 text-blue-700 text-sm font-medium border-t border-blue-100">제작 중 0%</div>
           <div class="p-4 border-t border-gray-200 bg-white shrink-0 sidebar-chat-area mx-2 mb-2">
@@ -352,6 +359,10 @@
                 <span class="icon-wrap"><svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4H6zM3 6h18M16 10a4 4 0 01-8 0"/></svg></span>
                 <span>쇼핑몰</span>
               </button>
+              <button type="button" class="home-view-icon-btn" data-home-nav="sns-flow" title="SNS 원스톱">
+                <span class="icon-wrap"><svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg></span>
+                <span>SNS 원스톱</span>
+              </button>
             </div>
           </div>
         </div>
@@ -399,6 +410,65 @@
                     </div>
                   </div>
                 </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <!-- SNS 원스톱 뷰 (기획 → 카드뉴스 → 캡션 → 예약) -->
+        <div id="sns-flow-view" class="hidden flex flex-col flex-1 min-h-0 bg-white">
+          <div class="flex-1 overflow-y-auto p-6">
+            <div class="w-full max-w-3xl mx-auto">
+              <h1 class="text-xl font-bold text-gray-900 mb-2">SNS 콘텐츠 원스톱</h1>
+              <p class="text-sm text-gray-500 mb-6">기획 → 카드뉴스 → 캡션 → 예약까지 한 흐름으로 진행하세요.</p>
+              <!-- 진행 단계 -->
+              <div id="sns-flow-steps" class="flex items-center gap-2 mb-8">
+                <button type="button" data-sns-step="1" class="sns-step-btn px-4 py-2 rounded-lg text-sm font-medium transition-colors">1. 기획</button>
+                <span class="text-gray-300">→</span>
+                <button type="button" data-sns-step="2" class="sns-step-btn px-4 py-2 rounded-lg text-sm font-medium transition-colors">2. 카드뉴스</button>
+                <span class="text-gray-300">→</span>
+                <button type="button" data-sns-step="3" class="sns-step-btn px-4 py-2 rounded-lg text-sm font-medium transition-colors">3. 캡션</button>
+                <span class="text-gray-300">→</span>
+                <button type="button" data-sns-step="4" class="sns-step-btn px-4 py-2 rounded-lg text-sm font-medium transition-colors">4. 예약</button>
+              </div>
+              <!-- Step 1: 기획 -->
+              <div id="sns-step-1" class="sns-step-panel border border-gray-200 rounded-xl p-6 bg-gray-50/50">
+                <h2 class="text-lg font-semibold text-gray-800 mb-2">컨텐츠 기획</h2>
+                <p class="text-sm text-gray-600 mb-4">주제나 방향을 입력하면 AI가 콘텐츠 아이디어를 생성합니다.</p>
+                <div class="flex gap-2 mb-4">
+                  <input type="text" id="sns-plan-input" class="flex-1 px-4 py-3 border border-gray-200 rounded-xl text-sm focus:border-[#2C96FF] focus:ring-1 focus:ring-[#2C96FF] outline-none" placeholder="예: 2월 건강한 아침 루틴, 고객 감동 사례" />
+                  <button type="button" id="sns-plan-generate-btn" class="px-5 py-3 rounded-xl bg-[#2C96FF] text-white text-sm font-semibold hover:bg-[#2380e0] transition-colors">아이디어 생성</button>
+                </div>
+                <div id="sns-plan-loading" class="hidden py-4 text-sm text-[#2C96FF]">생성 중...</div>
+                <div id="sns-plan-list" class="space-y-2"></div>
+              </div>
+              <!-- Step 2: 카드뉴스 -->
+              <div id="sns-step-2" class="sns-step-panel hidden border border-gray-200 rounded-xl p-6 bg-gray-50/50">
+                <h2 class="text-lg font-semibold text-gray-800 mb-2">카드뉴스 제작</h2>
+                <p class="text-sm text-gray-600 mb-4">선택한 기획으로 카드뉴스를 만듭니다. 카드뉴스 메뉴에서 이어서 편집할 수 있습니다.</p>
+                <div id="sns-step2-selected" class="mb-4 p-3 rounded-lg bg-white border border-gray-200 text-sm text-gray-700"></div>
+                <button type="button" id="sns-goto-cardnews-btn" class="px-5 py-3 rounded-xl bg-[#2C96FF] text-white text-sm font-semibold hover:bg-[#2380e0] transition-colors">카드뉴스로 이동하여 제작</button>
+              </div>
+              <!-- Step 3: 캡션 -->
+              <div id="sns-step-3" class="sns-step-panel hidden border border-gray-200 rounded-xl p-6 bg-gray-50/50">
+                <h2 class="text-lg font-semibold text-gray-800 mb-2">캡션 · 해시태그</h2>
+                <p class="text-sm text-gray-600 mb-4">게시물 캡션과 해시태그를 자동 생성합니다.</p>
+                <button type="button" id="sns-caption-generate-btn" class="mb-4 px-5 py-3 rounded-xl bg-[#2C96FF] text-white text-sm font-semibold hover:bg-[#2380e0] transition-colors">캡션 생성</button>
+                <div id="sns-caption-loading" class="hidden py-2 text-sm text-[#2C96FF]">생성 중...</div>
+                <div id="sns-caption-result" class="hidden space-y-3">
+                  <div><label class="text-xs text-gray-500 block mb-1">캡션</label><textarea id="sns-caption-text" rows="4" class="w-full px-3 py-2 border border-gray-200 rounded-lg text-sm"></textarea></div>
+                  <div><label class="text-xs text-gray-500 block mb-1">해시태그</label><input type="text" id="sns-hashtags" class="w-full px-3 py-2 border border-gray-200 rounded-lg text-sm" placeholder="#태그1 #태그2" /></div>
+                  <button type="button" id="sns-caption-copy-btn" class="px-4 py-2 text-sm font-medium text-gray-700 bg-gray-100 hover:bg-gray-200 rounded-lg">복사</button>
+                </div>
+              </div>
+              <!-- Step 4: 예약 -->
+              <div id="sns-step-4" class="sns-step-panel hidden border border-gray-200 rounded-xl p-6 bg-gray-50/50">
+                <h2 class="text-lg font-semibold text-gray-800 mb-2">발행 예약</h2>
+                <p class="text-sm text-gray-600 mb-4">예약 날짜/시간을 설정하면 목록에 저장됩니다. (실제 발행은 SNS 연동 후 가능)</p>
+                <div class="flex flex-wrap gap-4 mb-4">
+                  <div><label class="text-xs text-gray-500 block mb-1">예약 일시</label><input type="datetime-local" id="sns-schedule-datetime" class="px-3 py-2 border border-gray-200 rounded-lg text-sm" /></div>
+                  <div class="flex items-end"><button type="button" id="sns-schedule-save-btn" class="px-5 py-3 rounded-xl bg-[#2C96FF] text-white text-sm font-semibold hover:bg-[#2380e0] transition-colors">예약 목록에 저장</button></div>
+                </div>
+                <div id="sns-schedule-list" class="mt-4 space-y-2 text-sm text-gray-600"></div>
               </div>
             </div>
           </div>
@@ -549,8 +619,8 @@
         <!-- AI 채팅 뷰 (제미나이 스타일) -->
         <div id="ai-chat-view" class="hidden flex flex-col flex-1 min-h-0 bg-white">
           <!-- 채팅 메시지 영역 (폴더 미선택 시) -->
-          <div id="ai-chat-messages-wrap" class="flex-1 overflow-y-auto flex flex-col items-center justify-start py-8 px-4">
-            <div id="ai-chat-messages" class="w-full max-w-2xl space-y-6">
+          <div id="ai-chat-messages-wrap" class="flex-1 overflow-y-auto overflow-x-hidden flex flex-col items-center justify-start py-8 px-4 min-h-0">
+            <div id="ai-chat-messages" class="w-full max-w-2xl space-y-6 pb-8">
               <!-- 메시지가 여기에 렌더링됨 -->
             </div>
           </div>
@@ -910,13 +980,10 @@
       const text = pct != null ? `${label} ${pct}%` : label;
       if (loadingStatusBar) {
         loadingStatusBar.textContent = text;
+        if (pct != null && pct > 0) loadingStatusBar.classList.remove('hidden');
       }
     }
     function showLoadingBar() {
-      if (loadingStatusBar) {
-        loadingStatusBar.classList.remove('hidden');
-        loadingStatusBar.textContent = '제작 중 0%';
-      }
     }
     function hideLoadingBar() {
       if (loadingStatusBar) loadingStatusBar.classList.add('hidden');
@@ -1112,7 +1179,10 @@ ADDITION MODE: Output NEW overlay. If user wants "다른 버전/비교/추가" w
     const aiChatView = document.getElementById('ai-chat-view');
     const homeView = document.getElementById('home-view');
     const shoppingView = document.getElementById('shopping-view');
+    const snsFlowView = document.getElementById('sns-flow-view');
     const contextualSidebar = document.getElementById('contextual-sidebar');
+    let snsFlowCurrentStep = 1;
+    let snsFlowState = { ideas: [], selectedIdea: null, caption: '', hashtags: '' };
     function switchView(menu) {
       const prevMenu = activeMenu;
       if (prevMenu === 'chat') saveChatTaskList();
@@ -1129,6 +1199,7 @@ ADDITION MODE: Output NEW overlay. If user wants "다른 버전/비교/추가" w
         sidebarCollapsed = true;
         homeView?.classList.remove('hidden');
         shoppingView?.classList.add('hidden');
+        snsFlowView?.classList.add('hidden');
         canvasView?.classList.add('hidden');
         aiChatView?.classList.add('hidden');
         contextualSidebar?.classList.add('sidebar-collapsed');
@@ -1142,6 +1213,7 @@ ADDITION MODE: Output NEW overlay. If user wants "다른 버전/비교/추가" w
         document.getElementById('nav-sidebar-toggle')?.setAttribute('title', '작업 목록 접기');
         homeView?.classList.add('hidden');
         shoppingView?.classList.add('hidden');
+        snsFlowView?.classList.add('hidden');
         canvasView?.classList.add('hidden');
         aiChatView?.classList.remove('hidden');
         contextualSidebar?.classList.remove('sidebar-collapsed');
@@ -1164,6 +1236,7 @@ ADDITION MODE: Output NEW overlay. If user wants "다른 버전/비교/추가" w
         sidebarCollapsed = true;
         document.getElementById('nav-sidebar-toggle')?.setAttribute('title', '작업 목록 펼치기');
         homeView?.classList.add('hidden');
+        snsFlowView?.classList.add('hidden');
         canvasView?.classList.add('hidden');
         aiChatView?.classList.add('hidden');
         shoppingView?.classList.remove('hidden');
@@ -1172,11 +1245,25 @@ ADDITION MODE: Output NEW overlay. If user wants "다른 버전/비교/추가" w
         const btn = document.getElementById('nav-shopping');
         if (btn) { btn.classList.add('nav-item-active'); btn.classList.remove('text-gray-400'); }
         if (typeof window.updateShoppingApiBanner === 'function') window.updateShoppingApiBanner();
+      } else if (menu === 'sns-flow') {
+        sidebarCollapsed = true;
+        document.getElementById('nav-sidebar-toggle')?.setAttribute('title', '작업 목록 펼치기');
+        homeView?.classList.add('hidden');
+        shoppingView?.classList.add('hidden');
+        canvasView?.classList.add('hidden');
+        aiChatView?.classList.add('hidden');
+        snsFlowView?.classList.remove('hidden');
+        contextualSidebar?.classList.add('sidebar-collapsed');
+        document.getElementById('task-list-overlay')?.classList.add('hidden');
+        const btn = document.getElementById('nav-sns-flow');
+        if (btn) { btn.classList.add('nav-item-active'); btn.classList.remove('text-gray-400'); }
+        if (typeof window.renderSnsFlowStep === 'function') window.renderSnsFlowStep(snsFlowCurrentStep);
       } else {
         sidebarCollapsed = false;
         document.getElementById('nav-sidebar-toggle')?.setAttribute('title', '작업 목록 접기');
         homeView?.classList.add('hidden');
         shoppingView?.classList.add('hidden');
+        snsFlowView?.classList.add('hidden');
         document.getElementById('sidebar-task-list')?.classList.add('hidden');
         document.getElementById('sidebar-design-prompt')?.classList.remove('hidden');
         contextualSidebar?.classList.remove('sidebar-collapsed');
@@ -1319,6 +1406,130 @@ ADDITION MODE: Output NEW overlay. If user wants "다른 버전/비교/추가" w
       const nav = btn.getAttribute('data-home-nav');
       if (nav) switchView(nav);
     });
+
+    // SNS 원스톱: 단계 전환 + 기획/캡션 생성
+    (function initSnsFlow() {
+      const SNS_SCHEDULE_KEY = 'wava_sns_schedule_list';
+      window.renderSnsFlowStep = function(step) {
+        snsFlowCurrentStep = step;
+        document.querySelectorAll('.sns-step-btn').forEach(b => {
+          const s = parseInt(b.dataset.snsStep, 10);
+          if (s === step) { b.classList.add('bg-[#2C96FF]', 'text-white'); b.classList.remove('bg-gray-100', 'text-gray-600'); }
+          else { b.classList.remove('bg-[#2C96FF]', 'text-white'); b.classList.add('bg-gray-100', 'text-gray-600'); }
+        });
+        document.querySelectorAll('.sns-step-panel').forEach((p, i) => { p.classList.toggle('hidden', i + 1 !== step); });
+        const step2Sel = document.getElementById('sns-step2-selected');
+        if (step2Sel && snsFlowState.selectedIdea) step2Sel.textContent = snsFlowState.selectedIdea;
+        if (step === 4) {
+          const list = document.getElementById('sns-schedule-list');
+          if (list) {
+            try {
+              const arr = JSON.parse(localStorage.getItem(SNS_SCHEDULE_KEY) || '[]');
+              list.innerHTML = arr.length ? arr.map((x, i) => `<div class="flex justify-between items-center p-2 rounded-lg bg-white border border-gray-200"><span>${(x.datetime || '').slice(0, 16)} ${(x.caption || '').slice(0, 30)}…</span><button type="button" class="sns-schedule-del text-red-600 text-xs" data-i="${i}">삭제</button></div>`).join('') : '<p class="text-gray-500">예약된 항목이 없습니다.</p>';
+              list.querySelectorAll('.sns-schedule-del').forEach(btn => btn.addEventListener('click', function() {
+                const idx = parseInt(this.dataset.i, 10);
+                const arr = JSON.parse(localStorage.getItem(SNS_SCHEDULE_KEY) || '[]');
+                arr.splice(idx, 1);
+                localStorage.setItem(SNS_SCHEDULE_KEY, JSON.stringify(arr));
+                window.renderSnsFlowStep(4);
+              }));
+            } catch (_) { list.innerHTML = '<p class="text-gray-500">예약된 항목이 없습니다.</p>'; }
+          }
+        }
+      };
+      document.querySelectorAll('.sns-step-btn').forEach(btn => {
+        btn.addEventListener('click', () => { const s = parseInt(btn.dataset.snsStep, 10); if (s) window.renderSnsFlowStep(s); });
+      });
+      document.getElementById('sns-plan-generate-btn')?.addEventListener('click', async () => {
+        const input = document.getElementById('sns-plan-input');
+        const listEl = document.getElementById('sns-plan-list');
+        const loadingEl = document.getElementById('sns-plan-loading');
+        const topic = (input?.value || '').trim();
+        if (!topic) { alert('주제나 방향을 입력해주세요.'); return; }
+        const apiKey = (apiKeyInput?.value || '').trim() || localStorage.getItem(STORAGE_KEY) || '';
+        if (!apiKey) { alert('Gemini API Key를 설정해주세요.'); return; }
+        if (loadingEl) loadingEl.classList.remove('hidden');
+        if (listEl) listEl.innerHTML = '';
+        try {
+          const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${apiKey}`;
+          const res = await fetch(url, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              contents: [{ role: 'user', parts: [{ text: `다음 주제로 SNS 콘텐츠 아이디어를 5개만 간단히 제안해줘. 각 아이디어는 한 줄로, 번호 없이 줄바꿈으로 구분.\n\n주제: ${topic}` }] }],
+              generationConfig: { temperature: 0.7, maxOutputTokens: 1024 }
+            })
+          });
+          const data = await res.json();
+          const text = data.candidates?.[0]?.content?.parts?.[0]?.text || '';
+          const lines = text.split(/\n+/).map(s => s.replace(/^\d+[.)]\s*/, '').trim()).filter(s => s.length > 2).slice(0, 10);
+          snsFlowState.ideas = lines;
+          if (listEl) listEl.innerHTML = lines.map((idea, i) => `<button type="button" class="sns-idea-item block w-full text-left px-4 py-3 rounded-lg border border-gray-200 bg-white hover:border-[#2C96FF] hover:bg-blue-50/50 text-sm transition-colors" data-idea="${i}">${idea}</button>`).join('');
+          listEl.querySelectorAll('.sns-idea-item').forEach(b => b.addEventListener('click', function() {
+            const i = parseInt(this.dataset.idea, 10);
+            snsFlowState.selectedIdea = snsFlowState.ideas[i];
+            window.renderSnsFlowStep(2);
+          }));
+        } catch (e) { if (listEl) listEl.innerHTML = '<p class="text-red-600 text-sm">생성 실패: ' + (e.message || e) + '</p>'; }
+        if (loadingEl) loadingEl.classList.add('hidden');
+      });
+      document.getElementById('sns-goto-cardnews-btn')?.addEventListener('click', () => {
+        if (snsFlowState.selectedIdea) { switchView('cardnews'); if (promptInput) { promptInput.value = snsFlowState.selectedIdea + '\n\n위 주제로 카드뉴스 5장 만들어줘'; promptInput.dispatchEvent(new Event('input', { bubbles: true })); } }
+      });
+      document.getElementById('sns-caption-generate-btn')?.addEventListener('click', async () => {
+        const loadingEl = document.getElementById('sns-caption-loading');
+        const resultEl = document.getElementById('sns-caption-result');
+        const captionEl = document.getElementById('sns-caption-text');
+        const hashtagsEl = document.getElementById('sns-hashtags');
+        const apiKey = (apiKeyInput?.value || '').trim() || localStorage.getItem(STORAGE_KEY) || '';
+        if (!apiKey) { alert('Gemini API Key를 설정해주세요.'); return; }
+        const idea = snsFlowState.selectedIdea || '';
+        if (loadingEl) loadingEl.classList.remove('hidden');
+        if (resultEl) resultEl.classList.add('hidden');
+        try {
+          const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${apiKey}`;
+          const res = await fetch(url, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              contents: [{ role: 'user', parts: [{ text: `다음 콘텐츠 주제에 맞는 인스타그램 게시물 캡션(2~3문장)과 해시태그 5~8개를 생성해줘. 답변 형식:\n캡션:\n(캡션 내용)\n해시태그:\n#태그1 #태그2 ...\n\n주제: ${idea || 'SNS 콘텐츠'}` }] }],
+              generationConfig: { temperature: 0.7, maxOutputTokens: 512 }
+            })
+          });
+          const data = await res.json();
+          const text = (data.candidates?.[0]?.content?.parts?.[0]?.text || '').trim();
+          let caption = '', hashtags = '';
+          const capM = text.match(/캡션\s*:?\s*([\s\S]*?)(?=해시태그|#|$)/i);
+          const tagM = text.match(/(#[\w가-힣]+(?:\s*#[\w가-힣]+)*)/);
+          if (capM) caption = capM[1].trim();
+          if (tagM) hashtags = tagM[1].trim(); else hashtags = text.match(/#[\w가-힣]+/g)?.join(' ') || '';
+          snsFlowState.caption = caption; snsFlowState.hashtags = hashtags;
+          if (captionEl) captionEl.value = caption;
+          if (hashtagsEl) hashtagsEl.value = hashtags;
+          if (resultEl) resultEl.classList.remove('hidden');
+        } catch (e) { alert('캡션 생성 실패: ' + (e.message || e)); }
+        if (loadingEl) loadingEl.classList.add('hidden');
+      });
+      document.getElementById('sns-caption-copy-btn')?.addEventListener('click', () => {
+        const captionEl = document.getElementById('sns-caption-text');
+        const hashtagsEl = document.getElementById('sns-hashtags');
+        const text = (captionEl?.value || '') + '\n\n' + (hashtagsEl?.value || '');
+        if (text.trim()) navigator.clipboard.writeText(text.trim()).then(() => alert('복사되었습니다.'));
+      });
+      document.getElementById('sns-schedule-save-btn')?.addEventListener('click', () => {
+        const dtEl = document.getElementById('sns-schedule-datetime');
+        const datetime = dtEl?.value || '';
+        if (!datetime) { alert('예약 일시를 선택해주세요.'); return; }
+        try {
+          const arr = JSON.parse(localStorage.getItem(SNS_SCHEDULE_KEY) || '[]');
+          arr.push({ datetime, caption: snsFlowState.caption || '', hashtags: snsFlowState.hashtags || '', idea: snsFlowState.selectedIdea || '' });
+          localStorage.setItem(SNS_SCHEDULE_KEY, JSON.stringify(arr));
+          if (dtEl) dtEl.value = '';
+          window.renderSnsFlowStep(4);
+        } catch (e) { alert('저장 실패'); }
+      });
+      document.querySelectorAll('.sns-step-btn').forEach(b => { b.classList.add('bg-gray-100', 'text-gray-600'); });
+    })();
 
     // 쇼핑: 즉시 임시 썸네일 + 백엔드 폴링 후 실제 결과 교체
     (function initShoppingPage() {
@@ -4057,7 +4268,6 @@ ${userPrompt}
       const aspectRatio = getCurrentAspectRatio();
       const url = `https://generativelanguage.googleapis.com/v1beta/models/${modelSelect.value}:generateContent?key=${apiKey}`;
 
-      showLoadingBar();
       let progress = 0;
       const progressInterval = setInterval(() => { if (progress < 90) { progress += Math.floor(Math.random() * 8) + 3; progress = Math.min(progress, 90); updateLoadingStatus('design', progress); } }, 400);
 

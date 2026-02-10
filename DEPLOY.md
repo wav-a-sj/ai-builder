@@ -25,27 +25,44 @@ URL 접속 → 이미지 URL 입력 → 생성 버튼 클릭만 하면 됩니다
 
 ## 방법 1: Railway로 배포 (추천)
 
-1. [railway.app](https://railway.app) 가입
-2. **New Project** → **Deploy from GitHub** (또는 GitHub에 코드 먼저 올리기)
-3. 프로젝트 루트에 다음 파일 추가:
+### 내 사이트를 Railway에 반영하는 순서 (체크리스트)
 
-### `Procfile` (프로젝트 루트에 생성)
+| 순서 | 할 일 | 현재 상태 |
+|------|--------|-----------|
+| 1 | GitHub에 이 프로젝트 올리기 (`git init` → `git add .` → `git commit` → `git remote` → `git push`) | ✅ 저장소만 만들면 됨 |
+| 2 | [railway.app](https://railway.app) 가입 | - |
+| 3 | **New Project** → **Deploy from GitHub** → 저장소 연결 | - |
+| 4 | 루트에 `Procfile`, `runtime.txt` 있는지 확인 (이미 있음) | ✅ 있음 |
+| 5 | Railway **Variables**에 `GEMINI_API_KEY` 등 환경 변수 추가 | - |
+| 6 | 배포 실행 후 나온 URL로 접속 (예: `https://xxx.up.railway.app`) | - |
+
+이후 코드 수정 시: **GitHub에 push**만 하면 Railway가 자동으로 다시 배포합니다.
+
+---
+
+### 상세 단계
+
+1. [railway.app](https://railway.app) 가입
+2. **New Project** → **Deploy from GitHub** (GitHub에 코드 먼저 올려둔 뒤 연결)
+3. 프로젝트 루트에 다음 파일이 있어야 함 (이미 있으면 생략):
+
+**`Procfile`** (프로젝트 루트)
 ```
 web: python -m uvicorn backend.main:app --host 0.0.0.0 --port $PORT
 ```
 
-### `runtime.txt` (Python 버전 지정)
+**`runtime.txt`** (Python 버전, 선택)
 ```
 python-3.12.0
 ```
 
 4. **Railway**에서:
    - **Variables**에 환경 변수 추가:
-     - `GEMINI_API_KEY` (API 설정에서)
-     - `REPLICATE_TOKEN` (선택, rembg 로컬 사용 시 불필요)
-   - **Deploy** 실행
+     - `GEMINI_API_KEY` (Google AI Studio에서 발급)
+     - `REPLICATE_TOKEN` (선택, rembg 로컬 실패 시)
+   - Deploy는 GitHub 연결 시 자동 실행됨
 
-5. 배포 URL 확인 → 두 사람 모두 해당 URL로 접속
+5. **Settings** → **Networking** → **Generate Domain** 으로 공개 URL 생성 후, 해당 URL로 접속
 
 ---
 
