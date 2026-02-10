@@ -49,6 +49,19 @@ uvicorn backend.main:app --reload --port 8000
 
 - 종료: 터미널에서 `Ctrl+C`
 
+### 업데이트 / 원격 반영 (git push)
+
+로컬에서 수정한 내용을 GitHub 등 원격 저장소에 올리거나, Railway·Render 같은 배포 서버를 업데이트하려면:
+
+```bash
+cd c:\Users\admin\Desktop\wava-builder
+git add .
+git commit -m "변경 내용 요약"
+git push
+```
+
+- `git push` 후 배포 서비스가 자동으로 새 코드를 받아 재배포하는 경우가 많습니다.
+
 ---
 
 ### 방법 2: 배치 파일로 실행 (Windows)

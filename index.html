@@ -312,6 +312,61 @@
         </div>
       </div>
 
+      <!-- 카드뉴스 생성 모달 (미라 스타일: 팝업에서 템플릿 선택 후 생성) -->
+      <div id="cardnews-create-modal" class="hidden fixed inset-0 z-50 flex items-center justify-center p-4">
+        <div class="absolute inset-0 bg-black/30" id="cardnews-create-modal-backdrop"></div>
+        <div class="relative w-full max-w-4xl max-h-[90vh] bg-white rounded-2xl shadow-xl overflow-hidden flex flex-col">
+          <div class="shrink-0 px-6 py-4 border-b border-gray-200 flex items-center justify-between">
+            <div>
+              <h2 class="text-lg font-semibold text-gray-900">카드뉴스 생성</h2>
+              <p class="text-sm text-gray-500 mt-0.5">프리셋을 선택하고 콘텐츠를 입력하여 카드뉴스를 생성하세요.</p>
+            </div>
+            <button type="button" id="cardnews-create-modal-close" class="p-2 text-gray-500 hover:bg-gray-100 rounded-lg">✕</button>
+          </div>
+          <div class="shrink-0 flex gap-4 px-6 py-2 border-b border-gray-100 text-sm">
+            <span class="font-medium text-[#2C96FF]">1. 디자인 선택</span>
+            <span class="text-gray-400">→</span>
+            <span class="text-gray-400">2. 콘텐츠 입력</span>
+            <span class="text-gray-400">→</span>
+            <span class="text-gray-400">3. 결과 확인</span>
+          </div>
+          <div class="flex-1 overflow-y-auto p-6">
+            <div class="mb-4">
+              <label class="text-xs font-medium text-gray-500 block mb-2">이미지 비율</label>
+              <div class="flex flex-wrap gap-2">
+                <button type="button" class="cardnews-modal-ratio px-3 py-2 rounded-lg text-sm border-2 border-gray-200 hover:border-[#2C96FF] hover:bg-blue-50/50 transition-colors" data-ratio="4:5">4:5 (인스타 권장)</button>
+                <button type="button" class="cardnews-modal-ratio px-3 py-2 rounded-lg text-sm border-2 border-gray-200 hover:border-[#2C96FF] hover:bg-blue-50/50 transition-colors" data-ratio="1:1">1:1</button>
+                <button type="button" class="cardnews-modal-ratio px-3 py-2 rounded-lg text-sm border-2 border-gray-200 hover:border-[#2C96FF] hover:bg-blue-50/50 transition-colors" data-ratio="16:9">16:9</button>
+                <button type="button" class="cardnews-modal-ratio px-3 py-2 rounded-lg text-sm border-2 border-gray-200 hover:border-[#2C96FF] hover:bg-blue-50/50 transition-colors" data-ratio="9:16">9:16 (릴스)</button>
+                <button type="button" class="cardnews-modal-ratio px-3 py-2 rounded-lg text-sm border-2 border-gray-200 hover:border-[#2C96FF] hover:bg-blue-50/50 transition-colors" data-ratio="3:4">3:4</button>
+              </div>
+            </div>
+            <div class="mb-4">
+              <label class="text-xs font-medium text-gray-500 block mb-2">템플릿 카테고리</label>
+              <div class="flex flex-wrap gap-2">
+                <button type="button" class="cardnews-modal-cat px-3 py-2 rounded-lg text-sm border border-gray-200 hover:border-[#2C96FF] hover:bg-blue-50/50 transition-colors" data-cat="all">전체</button>
+                <button type="button" class="cardnews-modal-cat px-3 py-2 rounded-lg text-sm border border-gray-200 hover:border-[#2C96FF] hover:bg-blue-50/50 transition-colors" data-cat="business">비즈니스</button>
+                <button type="button" class="cardnews-modal-cat px-3 py-2 rounded-lg text-sm border border-gray-200 hover:border-[#2C96FF] hover:bg-blue-50/50 transition-colors" data-cat="lifestyle">라이프스타일</button>
+                <button type="button" class="cardnews-modal-cat px-3 py-2 rounded-lg text-sm border border-gray-200 hover:border-[#2C96FF] hover:bg-blue-50/50 transition-colors" data-cat="education">교육</button>
+                <button type="button" class="cardnews-modal-cat px-3 py-2 rounded-lg text-sm border border-gray-200 hover:border-[#2C96FF] hover:bg-blue-50/50 transition-colors" data-cat="marketing">마케팅</button>
+                <button type="button" class="cardnews-modal-cat px-3 py-2 rounded-lg text-sm border border-gray-200 hover:border-[#2C96FF] hover:bg-blue-50/50 transition-colors" data-cat="other">기타</button>
+              </div>
+            </div>
+            <div id="cardnews-modal-templates" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4 mb-6">
+              <!-- 템플릿 카드들은 JS에서 렌더 -->
+            </div>
+            <div class="border-t border-gray-200 pt-4">
+              <label class="text-xs font-medium text-gray-500 block mb-2">콘텐츠 (주제·지시사항)</label>
+              <textarea id="cardnews-modal-content" rows="3" class="w-full px-4 py-3 border border-gray-200 rounded-xl text-sm focus:border-[#2C96FF] focus:ring-1 focus:ring-[#2C96FF] outline-none resize-none" placeholder="예: 위 주제로 카드뉴스 5장 만들어줘"></textarea>
+            </div>
+          </div>
+          <div class="shrink-0 px-6 py-4 border-t border-gray-200 flex justify-end gap-2">
+            <button type="button" id="cardnews-modal-cancel" class="px-4 py-2.5 text-sm font-medium text-gray-700 bg-gray-100 hover:bg-gray-200 rounded-xl">취소</button>
+            <button type="button" id="cardnews-modal-start-btn" class="px-5 py-2.5 text-sm font-semibold text-white bg-[#2C96FF] hover:bg-[#2380e0] rounded-xl">카드뉴스에서 생성하기</button>
+          </div>
+        </div>
+      </div>
+
       <main class="flex-1 flex flex-col bg-gray-100 min-w-0">
         <!-- 홈 뷰 (기본 메인 페이지) -->
         <div id="home-view" class="flex flex-col flex-1 min-h-0 overflow-y-auto">
@@ -390,15 +445,44 @@
           <div class="flex-1 p-6 max-w-2xl mx-auto w-full">
             <section class="mb-8">
               <h2 class="text-sm font-semibold text-gray-500 uppercase tracking-wider mb-3">SNS 연동</h2>
-              <p class="text-sm text-gray-600 mb-3">연동한 계정으로 SNS 원스톱에서 바로 발행할 수 있습니다. Facebook·인스타그램, Threads, YouTube를 각각 연결할 수 있으며, 여러 플랫폼을 동시에 연동할 수 있습니다.</p>
-              <div id="sns-connections-list" class="mb-3 space-y-2 text-sm"></div>
-              <div class="flex flex-wrap gap-2">
-                <a id="sns-connect-facebook-btn" href="#" class="px-4 py-2 rounded-lg text-sm font-medium bg-[#1877f2] text-white hover:bg-[#166fe5] transition-colors">Facebook · 인스타그램 연결</a>
-                <a id="sns-connect-threads-btn" href="#" class="px-4 py-2 rounded-lg text-sm font-medium bg-black text-white hover:bg-gray-800 transition-colors">Threads 연결</a>
-                <a id="sns-connect-youtube-btn" href="#" class="px-4 py-2 rounded-lg text-sm font-medium bg-[#ff0000] text-white hover:bg-[#cc0000] transition-colors">YouTube 연결</a>
+              <p class="text-sm text-gray-600 mb-3">연동한 계정으로 SNS 원스톱에서 바로 발행할 수 있습니다.</p>
+              <div id="sns-connections-list" class="mb-4 space-y-2 text-sm"></div>
+              <p class="text-sm font-medium text-gray-800 mb-2">연결을 누르면 해당 로그인 페이지로 바로 이동합니다. (미라처럼 한 번에 연동)</p>
+              <div class="flex flex-wrap gap-2 mb-4">
+                <button type="button" id="sns-connect-facebook-btn" class="px-4 py-2 rounded-lg text-sm font-medium bg-[#1877f2] text-white hover:bg-[#166fe5] transition-colors">Facebook · 인스타그램 연결</button>
+                <button type="button" id="sns-connect-threads-btn" class="px-4 py-2 rounded-lg text-sm font-medium bg-black text-white hover:bg-gray-800 transition-colors">Threads 연결</button>
+                <button type="button" id="sns-connect-youtube-btn" class="px-4 py-2 rounded-lg text-sm font-medium bg-[#ff0000] text-white hover:bg-[#cc0000] transition-colors">YouTube 연결</button>
               </div>
-              <p class="text-xs text-gray-500 mt-2">Facebook 연결 시 해당 페이지와 연결된 인스타그램 비즈니스 계정이 함께 추가됩니다. Threads·YouTube는 각각 Meta 앱·Google Cloud 설정이 필요합니다.</p>
-              <p id="sns-auth-hint" class="text-xs text-gray-500 mt-3 hidden">서버에 FACEBOOK_APP_ID/SECRET, THREADS_APP_ID/SECRET, GOOGLE_CLIENT_ID/SECRET를 설정하면 연결이 가능합니다.</p>
+              <p class="text-xs text-gray-500 mb-4">Facebook 연결 시 해당 페이지에 연결된 인스타그램 비즈니스 계정이 함께 추가됩니다.</p>
+              <details id="sns-app-keys-details" class="mb-4 p-4 rounded-xl bg-gray-50 border border-gray-200">
+                <summary class="text-sm font-medium text-gray-700 cursor-pointer">연동이 안 되나요? 앱 키 직접 입력</summary>
+                <div class="grid gap-4 sm:grid-cols-3 text-sm mt-3">
+                  <div>
+                    <p class="font-medium text-gray-600 mb-1">Facebook · 인스타그램</p>
+                    <input type="text" id="sns-fb-app-id" placeholder="App ID" class="w-full px-3 py-2 border border-gray-200 rounded-lg mb-1 text-xs" />
+                    <input type="password" id="sns-fb-app-secret" placeholder="App Secret" class="w-full px-3 py-2 border border-gray-200 rounded-lg text-xs" />
+                  </div>
+                  <div>
+                    <p class="font-medium text-gray-600 mb-1">Threads</p>
+                    <input type="text" id="sns-threads-app-id" placeholder="App ID" class="w-full px-3 py-2 border border-gray-200 rounded-lg mb-1 text-xs" />
+                    <input type="password" id="sns-threads-app-secret" placeholder="App Secret" class="w-full px-3 py-2 border border-gray-200 rounded-lg text-xs" />
+                  </div>
+                  <div>
+                    <p class="font-medium text-gray-600 mb-1">YouTube (Google)</p>
+                    <input type="text" id="sns-yt-client-id" placeholder="Client ID" class="w-full px-3 py-2 border border-gray-200 rounded-lg mb-1 text-xs" />
+                    <input type="password" id="sns-yt-client-secret" placeholder="Client Secret" class="w-full px-3 py-2 border border-gray-200 rounded-lg text-xs" />
+                  </div>
+                </div>
+              </details>
+              <div id="sns-auth-hint" class="mt-3 p-3 rounded-lg bg-amber-50 border border-amber-200 text-xs text-amber-800 hidden">
+                <p class="font-medium mb-1">연동이 안 될 때 (JSON 오류 메시지가 보일 때)</p>
+                <p class="mb-1">서버(백엔드)에 아래 환경 변수를 설정해야 합니다. 로컬이라면 .env 파일, 배포(Railway·Render 등)라면 서비스의 <strong>Variables</strong> 메뉴에서 추가하세요.</p>
+                <ul class="list-disc list-inside space-y-0.5">
+                  <li>Facebook: FACEBOOK_APP_ID, FACEBOOK_APP_SECRET</li>
+                  <li>Threads: THREADS_APP_ID, THREADS_APP_SECRET (Meta 앱 대시보드에서 Threads API 사용 설정)</li>
+                  <li>YouTube: GOOGLE_CLIENT_ID, GOOGLE_CLIENT_SECRET (Google Cloud Console에서 YouTube API 사용 설정)</li>
+                </ul>
+              </div>
             </section>
             <section class="mb-8">
               <h2 class="text-sm font-semibold text-gray-500 uppercase tracking-wider mb-3">댓글 관리 (AI 답글)</h2>
@@ -488,24 +572,46 @@
                 <span class="text-gray-300">→</span>
                 <button type="button" data-sns-step="4" class="sns-step-btn px-4 py-2 rounded-lg text-sm font-medium transition-colors">4. 예약</button>
               </div>
-              <!-- Step 1: 기획 -->
+              <!-- Step 1: 기획 (미라 스타일: 아이디어 모드 + 상세 안내) -->
               <div id="sns-step-1" class="sns-step-panel border border-gray-200 rounded-xl p-6 bg-gray-50/50">
-                <h2 class="text-lg font-semibold text-gray-800 mb-2">컨텐츠 기획</h2>
-                <p class="text-sm text-gray-600 mb-4">주제나 방향을 입력하면 AI가 콘텐츠 아이디어를 생성합니다.</p>
+                <h2 class="text-lg font-semibold text-gray-800 mb-2">콘텐츠 아이디어 생성</h2>
+                <p class="text-sm text-gray-600 mb-3">구체적인 방향을 입력하면 더 맞춤화된 콘텐츠가 생성됩니다.</p>
+                <div id="sns-idea-mode-group" class="mb-4 flex flex-wrap gap-3">
+                  <label class="sns-idea-mode-card flex-1 min-w-[140px] cursor-pointer rounded-xl border-2 p-4 transition-colors has-[:checked]:border-[#2C96FF] has-[:checked]:bg-blue-50/70">
+                    <input type="radio" name="sns-idea-mode" value="creation" class="sr-only peer" checked />
+                    <span class="flex items-center gap-2 text-sm font-medium text-gray-800"><span class="text-lg">✨</span> 창작 기반</span>
+                    <p class="mt-1 text-xs text-gray-600">외부 자료 없이 AI가 계정에 맞는 스토리·아이디어를 생성합니다.</p>
+                  </label>
+                  <label class="sns-idea-mode-card flex-1 min-w-[140px] cursor-pointer rounded-xl border-2 border-gray-200 p-4 transition-colors has-[:checked]:border-[#2C96FF] has-[:checked]:bg-blue-50/70">
+                    <input type="radio" name="sns-idea-mode" value="search" class="sr-only peer" />
+                    <span class="flex items-center gap-2 text-sm font-medium text-gray-800"><span class="text-lg">🔍</span> 검색 기반</span>
+                    <p class="mt-1 text-xs text-gray-600">최신 트렌드·검색 자료를 참고해 아이디어를 제안합니다.</p>
+                  </label>
+                  <label class="sns-idea-mode-card flex-1 min-w-[140px] cursor-pointer rounded-xl border-2 border-gray-200 p-4 transition-colors has-[:checked]:border-[#2C96FF] has-[:checked]:bg-blue-50/70">
+                    <input type="radio" name="sns-idea-mode" value="knowledge" class="sr-only peer" />
+                    <span class="flex items-center gap-2 text-sm font-medium text-gray-800"><span class="text-lg">🧠</span> 내부 지식 기반</span>
+                    <p class="mt-1 text-xs text-gray-600">업로드한 문서·지식 기준으로 맞춤 아이디어를 생성합니다.</p>
+                  </label>
+                </div>
+                <div id="sns-knowledge-upload-wrap" class="hidden mb-4 p-4 rounded-xl border-2 border-dashed border-gray-200 bg-white">
+                  <p class="text-sm font-medium text-gray-800 mb-2">지식 문서 업로드 (내부 지식 기반일 때)</p>
+                  <p class="text-xs text-gray-500 mb-2">PDF, TXT 등 업로드 시 해당 내용을 참고해 아이디어를 생성합니다. (준비 중: 현재는 주제만으로 생성됩니다)</p>
+                  <input type="file" id="sns-knowledge-file" class="block w-full text-sm text-gray-500 file:mr-3 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-sm file:font-medium file:bg-blue-50 file:text-[#2C96FF] hover:file:bg-blue-100" accept=".pdf,.txt,.doc,.docx" multiple />
+                </div>
                 <div class="flex gap-2 mb-4">
-                  <input type="text" id="sns-plan-input" class="flex-1 px-4 py-3 border border-gray-200 rounded-xl text-sm focus:border-[#2C96FF] focus:ring-1 focus:ring-[#2C96FF] outline-none" placeholder="예: 2월 건강한 아침 루틴, 고객 감동 사례" />
+                  <input type="text" id="sns-plan-input" class="flex-1 px-4 py-3 border border-gray-200 rounded-xl text-sm focus:border-[#2C96FF] focus:ring-1 focus:ring-[#2C96FF] outline-none" placeholder="예: 팀원과의 에피소드, 성장 스토리, 2월 건강한 아침 루틴" />
                   <button type="button" id="sns-plan-generate-btn" class="px-5 py-3 rounded-xl bg-[#2C96FF] text-white text-sm font-semibold hover:bg-[#2380e0] transition-colors">아이디어 생성</button>
                 </div>
                 <div id="sns-plan-loading" class="hidden py-4 text-sm text-[#2C96FF]">생성 중...</div>
                 <div id="sns-plan-list" class="space-y-2"></div>
               </div>
-              <!-- Step 2: 카드뉴스 -->
+              <!-- Step 2: 카드뉴스 (팝업에서 템플릿 선택 후 생성) -->
               <div id="sns-step-2" class="sns-step-panel hidden border border-gray-200 rounded-xl p-6 bg-gray-50/50">
                 <h2 class="text-lg font-semibold text-gray-800 mb-2">카드뉴스 제작</h2>
-                <p class="text-sm text-gray-600 mb-4">선택한 기획으로 카드뉴스를 만듭니다. 카드뉴스 메뉴에서 이어서 편집할 수 있습니다.</p>
+                <p class="text-sm text-gray-600 mb-4">카드뉴스 생성 버튼을 누르면 팝업에서 템플릿을 선택하고 바로 제작을 시작할 수 있습니다.</p>
                 <div id="sns-step2-selected" class="mb-4 p-3 rounded-lg bg-white border border-gray-200 text-sm text-gray-700"></div>
                 <div class="flex flex-wrap gap-2">
-                  <button type="button" id="sns-goto-cardnews-btn" class="px-5 py-3 rounded-xl bg-[#2C96FF] text-white text-sm font-semibold hover:bg-[#2380e0] transition-colors">카드뉴스로 이동하여 제작</button>
+                  <button type="button" id="sns-goto-cardnews-btn" class="px-5 py-3 rounded-xl bg-[#2C96FF] text-white text-sm font-semibold hover:bg-[#2380e0] transition-colors">카드뉴스 생성</button>
                   <button type="button" id="sns-goto-video-btn" class="px-5 py-3 rounded-xl bg-[#7c3aed] text-white text-sm font-semibold hover:bg-[#6d28d9] transition-colors">숏폼(영상)으로 이동하여 제작</button>
                 </div>
               </div>
@@ -1181,32 +1287,66 @@ ADDITION MODE: Output NEW overlay. If user wants "다른 버전/비교/추가" w
     });
     // 페이지 로드 시 #settings + sns_connected / sns_error 있으면 설정 페이지로 이동 후 메시지
     (function checkSettingsHash() {
-      const hash = window.location.hash || '';
       const params = new URLSearchParams(window.location.search);
-      if (hash !== '#settings' && !params.has('sns_connected') && !params.has('sns_error')) return;
-      switchView('settings');
+      const hasSnsResult = params.has('sns_connected') || params.has('sns_error');
+      const hash = window.location.hash || '';
+      if (hash !== '#settings' && hash !== '#sns' && !hasSnsResult) return;
+      if (hasSnsResult) switchView('sns-settings');
+      else if (hash === '#settings') switchView('settings');
       if (params.has('sns_connected')) {
         const name = params.get('name') || '연동됨';
         alert('SNS 연동 완료: ' + decodeURIComponent(name));
-        window.history.replaceState('', '', window.location.pathname + '#settings');
+        window.history.replaceState('', '', window.location.pathname + (hash ? hash : ''));
       }
       if (params.has('sns_error')) {
         const msg = params.get('sns_error') || '연동 실패';
         alert('SNS 연동 오류: ' + decodeURIComponent(msg));
-        window.history.replaceState('', '', window.location.pathname + '#settings');
+        const detailsEl = document.getElementById('sns-app-keys-details');
+        if (detailsEl) detailsEl.open = true;
+        window.history.replaceState('', '', window.location.pathname + (hash ? hash : ''));
       }
       if (typeof window.loadSnsConnections === 'function') window.loadSnsConnections();
     })();
+    (function initSnsConnectButtons() {
+      const apiBase = (location.protocol === 'http:' || location.protocol === 'https:') ? location.origin : 'http://localhost:8000';
+      // 앱 키 없을 때: 미라처럼 바로 로그인 페이지로 이동 (서버가 302로 Facebook/인스타 등으로 보냄)
+      function goSnsAuth(path) {
+        window.location.href = apiBase + path;
+      }
+      function tryPendingThenAuth(pendingPath, authPath, appIdElId, appSecretElId, idKey, secretKey) {
+        const idEl = document.getElementById(appIdElId);
+        const secretEl = document.getElementById(appSecretElId);
+        const idVal = (idEl && idEl.value || '').trim();
+        const secretVal = (secretEl && secretEl.value || '').trim();
+        if (idVal && secretVal) {
+          fetch(apiBase + pendingPath, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ [idKey]: idVal, [secretKey]: secretVal })
+          }).then(function(r) {
+            if (!r.ok) { r.json().catch(function() { return {}; }).then(function(d) { alert(d.detail || d.message || '저장 실패'); }); return; }
+            return r.json();
+          }).then(function(data) {
+            if (data && data.state) window.location.href = apiBase + authPath + '?state=' + encodeURIComponent(data.state);
+          }).catch(function(e) { alert('연결 실패: ' + (e.message || e)); });
+        } else {
+          goSnsAuth(authPath);
+        }
+      }
+      document.getElementById('sns-connect-facebook-btn')?.addEventListener('click', function() {
+        tryPendingThenAuth('/api/sns/pending/facebook', '/api/sns/auth/facebook', 'sns-fb-app-id', 'sns-fb-app-secret', 'app_id', 'app_secret');
+      });
+      document.getElementById('sns-connect-threads-btn')?.addEventListener('click', function() {
+        tryPendingThenAuth('/api/sns/pending/threads', '/api/sns/auth/threads', 'sns-threads-app-id', 'sns-threads-app-secret', 'app_id', 'app_secret');
+      });
+      document.getElementById('sns-connect-youtube-btn')?.addEventListener('click', function() {
+        tryPendingThenAuth('/api/sns/pending/youtube', '/api/sns/auth/youtube', 'sns-yt-client-id', 'sns-yt-client-secret', 'client_id', 'client_secret');
+      });
+    })();
     window.loadSnsConnections = async function() {
       const listEl = document.getElementById('sns-connections-list');
-      const fbBtn = document.getElementById('sns-connect-facebook-btn');
-      const threadsBtn = document.getElementById('sns-connect-threads-btn');
-      const youtubeBtn = document.getElementById('sns-connect-youtube-btn');
       const hint = document.getElementById('sns-auth-hint');
       const apiBase = (location.protocol === 'http:' || location.protocol === 'https:') ? location.origin : 'http://localhost:8000';
-      if (fbBtn) fbBtn.href = apiBase + '/api/sns/auth/facebook';
-      if (threadsBtn) threadsBtn.href = apiBase + '/api/sns/auth/threads';
-      if (youtubeBtn) youtubeBtn.href = apiBase + '/api/sns/auth/youtube';
       if (!listEl) return;
       try {
         const r = await fetch(apiBase + '/api/sns/connections');
@@ -1866,7 +2006,7 @@ ADDITION MODE: Output NEW overlay. If user wants "다른 버전/비교/추가" w
       document.querySelectorAll('.sns-step-btn').forEach(btn => {
         btn.addEventListener('click', () => { const s = parseInt(btn.dataset.snsStep, 10); if (s) window.renderSnsFlowStep(s); });
       });
-      document.getElementById('sns-plan-generate-btn')?.addEventListener('click', async () => {
+      window.runSnsPlanGenerate = async function() {
         const input = document.getElementById('sns-plan-input');
         const listEl = document.getElementById('sns-plan-list');
         const loadingEl = document.getElementById('sns-plan-loading');
@@ -1874,15 +2014,23 @@ ADDITION MODE: Output NEW overlay. If user wants "다른 버전/비교/추가" w
         if (!topic) { alert('주제나 방향을 입력해주세요.'); return; }
         const apiKey = (apiKeyInput?.value || '').trim() || localStorage.getItem(STORAGE_KEY) || '';
         if (!apiKey) { alert('Gemini API Key를 설정해주세요.'); return; }
+        const modeEl = document.querySelector('input[name="sns-idea-mode"]:checked');
+        const mode = (modeEl && modeEl.value) || 'creation';
+        const modeLabel = { creation: '창작', search: '검색', knowledge: '내부 지식' }[mode] || '창작';
         if (loadingEl) loadingEl.classList.remove('hidden');
         if (listEl) listEl.innerHTML = '';
         try {
           const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${apiKey}`;
+          const promptByMode = {
+            creation: `다음 주제로 SNS 콘텐츠 아이디어를 5개만 간단히 제안해줘. 창작 스토리처럼 외부 자료 없이 그 사람/계정에 맞는 일상·에피소드·생각에 대한 아이디어로. 각 아이디어는 한 줄로, 번호 없이 줄바꿈으로 구분.\n\n주제: ${topic}`,
+            search: `최신 트렌드·검색 자료를 참고해서 다음 주제로 SNS 콘텐츠 아이디어를 5개 제안해줘. 각 아이디어는 한 줄로, 번호 없이 줄바꿈으로 구분.\n\n주제: ${topic}`,
+            knowledge: `업로드한 내부 지식·문서를 바탕으로 다음 주제에 맞는 SNS 콘텐츠 아이디어를 5개 제안해줘. 각 아이디어는 한 줄로, 번호 없이 줄바꿈으로 구분.\n\n주제: ${topic}`
+          };
           const res = await fetch(url, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({
-              contents: [{ role: 'user', parts: [{ text: `다음 주제로 SNS 콘텐츠 아이디어를 5개만 간단히 제안해줘. 각 아이디어는 한 줄로, 번호 없이 줄바꿈으로 구분.\n\n주제: ${topic}` }] }],
+              contents: [{ role: 'user', parts: [{ text: promptByMode[mode] || promptByMode.creation }] }],
               generationConfig: { temperature: 0.7, maxOutputTokens: 1024 }
             })
           });
@@ -1890,7 +2038,8 @@ ADDITION MODE: Output NEW overlay. If user wants "다른 버전/비교/추가" w
           const text = data.candidates?.[0]?.content?.parts?.[0]?.text || '';
           const lines = text.split(/\n+/).map(s => s.replace(/^\d+[.)]\s*/, '').trim()).filter(s => s.length > 2).slice(0, 10);
           snsFlowState.ideas = lines;
-          if (listEl) listEl.innerHTML = lines.map((idea, i) => `<button type="button" class="sns-idea-item block w-full text-left px-4 py-3 rounded-lg border border-gray-200 bg-white hover:border-[#2C96FF] hover:bg-blue-50/50 text-sm transition-colors" data-idea="${i}">${idea}</button>`).join('');
+          snsFlowState.ideaMode = mode;
+          if (listEl) listEl.innerHTML = lines.map((idea, i) => `<button type="button" class="sns-idea-item block w-full text-left px-4 py-3 rounded-lg border border-gray-200 bg-white hover:border-[#2C96FF] hover:bg-blue-50/50 text-sm transition-colors" data-idea="${i}"><span class="text-xs text-gray-500 mr-2">${modeLabel}</span>${idea}</button>`).join('');
           listEl.querySelectorAll('.sns-idea-item').forEach(b => b.addEventListener('click', function() {
             const i = parseInt(this.dataset.idea, 10);
             snsFlowState.selectedIdea = snsFlowState.ideas[i];
@@ -1898,9 +2047,18 @@ ADDITION MODE: Output NEW overlay. If user wants "다른 버전/비교/추가" w
           }));
         } catch (e) { if (listEl) listEl.innerHTML = '<p class="text-red-600 text-sm">생성 실패: ' + (e.message || e) + '</p>'; }
         if (loadingEl) loadingEl.classList.add('hidden');
+      };
+      document.getElementById('sns-plan-generate-btn')?.addEventListener('click', window.runSnsPlanGenerate);
+      document.getElementById('sns-plan-input')?.addEventListener('keydown', (e) => { if (e.key === 'Enter') { e.preventDefault(); window.runSnsPlanGenerate(); } });
+      document.querySelectorAll('input[name="sns-idea-mode"]').forEach(function(radio) {
+        radio.addEventListener('change', function() {
+          const wrap = document.getElementById('sns-knowledge-upload-wrap');
+          if (wrap) wrap.classList.toggle('hidden', this.value !== 'knowledge');
+        });
       });
       document.getElementById('sns-goto-cardnews-btn')?.addEventListener('click', () => {
-        if (snsFlowState.selectedIdea) { switchView('cardnews'); if (promptInput) { promptInput.value = snsFlowState.selectedIdea + '\n\n위 주제로 카드뉴스 5장 만들어줘'; promptInput.dispatchEvent(new Event('input', { bubbles: true })); } }
+        if (typeof window.openCardnewsCreateModal === 'function') window.openCardnewsCreateModal();
+        else if (snsFlowState.selectedIdea) { switchView('cardnews'); if (promptInput) { promptInput.value = snsFlowState.selectedIdea + '\n\n위 주제로 카드뉴스 5장 만들어줘'; promptInput.dispatchEvent(new Event('input', { bubbles: true })); } }
       });
       document.getElementById('sns-goto-video-btn')?.addEventListener('click', () => {
         if (snsFlowState.selectedIdea) {
@@ -1950,6 +2108,91 @@ ADDITION MODE: Output NEW overlay. If user wants "다른 버전/비교/추가" w
         const hashtagsEl = document.getElementById('sns-hashtags');
         const text = (captionEl?.value || '') + '\n\n' + (hashtagsEl?.value || '');
         if (text.trim()) navigator.clipboard.writeText(text.trim()).then(() => alert('복사되었습니다.'));
+      });
+      // 카드뉴스 생성 모달 (미라 스타일: 팝업 + 템플릿)
+      const CARDNEWS_TEMPLATES = [
+        { id: 't1', category: 'business', title: '비즈니스 요약', desc: '핵심 메시지 강조', ratio: '4:5' },
+        { id: 't2', category: 'business', title: '데이터 인사이트', desc: '숫자·차트 강조', ratio: '4:5' },
+        { id: 't3', category: 'lifestyle', title: '일상 스토리', desc: '감성·사진 중심', ratio: '4:5' },
+        { id: 't4', category: 'lifestyle', title: '인스타 감성', desc: '감성카페·장소 소개', ratio: '4:5' },
+        { id: 't5', category: 'education', title: '교육·팁', desc: '단계별 안내', ratio: '4:5' },
+        { id: 't6', category: 'marketing', title: '마케팅 트렌드', desc: '키워드·CTA 강조', ratio: '4:5' },
+        { id: 't7', category: 'marketing', title: '프로모션', desc: '할인·이벤트', ratio: '1:1' },
+        { id: 't8', category: 'other', title: '자유 레이아웃', desc: 'AI 추천 스타일', ratio: '4:5' }
+      ];
+      let cardnewsModalSelectedRatio = '4:5';
+      let cardnewsModalSelectedCat = 'all';
+      let cardnewsModalSelectedTemplateId = null;
+      function renderCardnewsModalTemplates() {
+        const wrap = document.getElementById('cardnews-modal-templates');
+        if (!wrap) return;
+        const list = cardnewsModalSelectedCat === 'all' ? CARDNEWS_TEMPLATES : CARDNEWS_TEMPLATES.filter(t => t.category === cardnewsModalSelectedCat);
+        wrap.innerHTML = list.map(t => {
+          const selected = cardnewsModalSelectedTemplateId === t.id;
+          return `<button type="button" class="cardnews-modal-tpl text-left rounded-xl border-2 p-3 transition-colors ${selected ? 'border-[#2C96FF] bg-blue-50/50' : 'border-gray-200 hover:border-gray-300 bg-gray-50/50'}" data-tpl-id="${t.id}">
+            <div class="aspect-[4/5] rounded-lg bg-gradient-to-br from-gray-100 to-gray-200 mb-2 flex items-center justify-center text-gray-400 text-xs">${t.ratio}</div>
+            <div class="font-medium text-sm text-gray-800">${t.title}</div>
+            <div class="text-xs text-gray-500">${t.desc}</div>
+          </button>`;
+        }).join('');
+        wrap.querySelectorAll('.cardnews-modal-tpl').forEach(btn => {
+          btn.addEventListener('click', () => {
+            cardnewsModalSelectedTemplateId = btn.dataset.tplId;
+            renderCardnewsModalTemplates();
+          });
+        });
+      }
+      window.openCardnewsCreateModal = function() {
+        const modal = document.getElementById('cardnews-create-modal');
+        const contentEl = document.getElementById('cardnews-modal-content');
+        if (!modal || !contentEl) return;
+        const idea = snsFlowState.selectedIdea || '';
+        contentEl.value = idea ? (idea + '\n\n위 주제로 카드뉴스 5장 만들어줘') : '';
+        cardnewsModalSelectedRatio = '4:5';
+        cardnewsModalSelectedCat = 'all';
+        cardnewsModalSelectedTemplateId = null;
+        document.querySelectorAll('.cardnews-modal-ratio').forEach(b => {
+          b.classList.remove('border-[#2C96FF]', 'bg-blue-50/50');
+          b.classList.add('border-gray-200');
+          if (b.dataset.ratio === '4:5') { b.classList.add('border-[#2C96FF]', 'bg-blue-50/50'); }
+        });
+        document.querySelectorAll('.cardnews-modal-cat').forEach(b => {
+          b.classList.remove('border-[#2C96FF]', 'bg-blue-50/50');
+          b.classList.add('border-gray-200');
+          if (b.dataset.cat === 'all') { b.classList.add('border-[#2C96FF]', 'bg-blue-50/50'); }
+        });
+        renderCardnewsModalTemplates();
+        modal.classList.remove('hidden');
+      };
+      document.getElementById('cardnews-create-modal-close')?.addEventListener('click', () => document.getElementById('cardnews-create-modal')?.classList.add('hidden'));
+      document.getElementById('cardnews-create-modal-backdrop')?.addEventListener('click', () => document.getElementById('cardnews-create-modal')?.classList.add('hidden'));
+      document.getElementById('cardnews-modal-cancel')?.addEventListener('click', () => document.getElementById('cardnews-create-modal')?.classList.add('hidden'));
+      document.querySelectorAll('.cardnews-modal-ratio').forEach(btn => {
+        btn.addEventListener('click', function() {
+          cardnewsModalSelectedRatio = this.dataset.ratio || '4:5';
+          document.querySelectorAll('.cardnews-modal-ratio').forEach(b => { b.classList.remove('border-[#2C96FF]', 'bg-blue-50/50'); b.classList.add('border-gray-200'); });
+          this.classList.add('border-[#2C96FF]', 'bg-blue-50/50'); this.classList.remove('border-gray-200');
+        });
+      });
+      document.querySelectorAll('.cardnews-modal-cat').forEach(btn => {
+        btn.addEventListener('click', function() {
+          cardnewsModalSelectedCat = this.dataset.cat || 'all';
+          document.querySelectorAll('.cardnews-modal-cat').forEach(b => { b.classList.remove('border-[#2C96FF]', 'bg-blue-50/50'); b.classList.add('border-gray-200'); });
+          this.classList.add('border-[#2C96FF]', 'bg-blue-50/50'); this.classList.remove('border-gray-200');
+          renderCardnewsModalTemplates();
+        });
+      });
+      document.getElementById('cardnews-modal-start-btn')?.addEventListener('click', () => {
+        const contentEl = document.getElementById('cardnews-modal-content');
+        const text = (contentEl?.value || '').trim();
+        document.getElementById('cardnews-create-modal')?.classList.add('hidden');
+        switchView('cardnews');
+        if (promptInput) {
+          const base = text || ((snsFlowState.selectedIdea || '') + '\n\n위 주제로 카드뉴스 5장 만들어줘');
+          const ratioHint = cardnewsModalSelectedRatio !== '4:5' ? '\n\n' + cardnewsModalSelectedRatio + ' 비율로 만들어줘.' : '';
+          promptInput.value = base + ratioHint;
+          promptInput.dispatchEvent(new Event('input', { bubbles: true }));
+        }
       });
       document.getElementById('sns-schedule-save-btn')?.addEventListener('click', async () => {
         const dtEl = document.getElementById('sns-schedule-datetime');

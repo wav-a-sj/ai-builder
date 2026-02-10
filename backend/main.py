@@ -406,30 +406,80 @@ async def sns_list_connections() -> Dict[str, Any]:
         return {"connections": [], "error": str(e)}
 
 
+# SNS 연동 시 UI에서 입력한 앱 키로 바로 연동하기 위한 임시 저장 (state -> credentials)
+SNS_PENDING: Dict[str, Dict[str, Any]] = {}
+
+
+class SnsPendingFacebook(BaseModel):
+    app_id: str = Field(..., min_length=1)
+    app_secret: str = Field(..., min_length=1)
+
+
+class SnsPendingThreads(BaseModel):
+    app_id: str = Field(..., min_length=1)
+    app_secret: str = Field(..., min_length=1)
+
+
+class SnsPendingYoutube(BaseModel):
+    client_id: str = Field(..., min_length=1)
+    client_secret: str = Field(..., min_length=1)
+
+
+@app.post("/api/sns/pending/facebook")
+async def sns_pending_facebook(body: SnsPendingFacebook) -> Dict[str, str]:
+    """앱 키를 저장하고 state를 반환. 이후 /api/sns/auth/facebook?state=xxx 로 이동."""
+    state = str(uuid4())
+    SNS_PENDING[state] = {"platform": "facebook", "app_id": body.app_id.strip(), "app_secret": body.app_secret.strip()}
+    return {"state": state}
+
+
+@app.post("/api/sns/pending/threads")
+async def sns_pending_threads(body: SnsPendingThreads) -> Dict[str, str]:
+    state = str(uuid4())
+    SNS_PENDING[state] = {"platform": "threads", "app_id": body.app_id.strip(), "app_secret": body.app_secret.strip()}
+    return {"state": state}
+
+
+@app.post("/api/sns/pending/youtube")
+async def sns_pending_youtube(body: SnsPendingYoutube) -> Dict[str, str]:
+    state = str(uuid4())
+    SNS_PENDING[state] = {"platform": "youtube", "client_id": body.client_id.strip(), "client_secret": body.client_secret.strip()}
+    return {"state": state}
+
+
 @app.get("/api/sns/auth/facebook")
-async def sns_auth_facebook(request: Request) -> Response:
-    """Facebook OAuth URL로 리다이렉트."""
+async def sns_auth_facebook(request: Request, state: Optional[str] = None) -> Response:
+    """Facebook OAuth URL로 리다이렉트. state 있으면 UI에서 넣은 앱 키 사용. 미라처럼 바로 로그인 페이지로."""
     base = str(request.base_url).rstrip("/")
+    front = (base.rsplit("/api/", 1)[0] or base).rstrip("/")
     redirect_uri = f"{base}/api/sns/callback/facebook"
-    url = getattr(sns_auth, "build_facebook_auth_url", lambda u: None)(redirect_uri)
+    app_id_arg = None
+    state_arg = state
+    if state and state in SNS_PENDING and SNS_PENDING[state].get("platform") == "facebook":
+        app_id_arg = SNS_PENDING[state].get("app_id")
+    url = getattr(sns_auth, "build_facebook_auth_url", lambda u, **kw: None)(redirect_uri, app_id=app_id_arg, state=state_arg)
     if not url:
-        raise HTTPException(
-            status_code=503,
-            detail="FACEBOOK_APP_ID를 설정해주세요. (설정 → SNS 연동 안내 참고)",
-        )
+        from urllib.parse import quote
+        return RedirectResponse(f"{front}/?sns_error=" + quote("앱 키가 없습니다. 아래 '연동이 안 되나요?'에서 앱 키를 입력한 뒤 다시 연결해주세요.") + "#sns")
     return RedirectResponse(url=url)
 
 
 @app.get("/api/sns/callback/facebook")
-async def sns_callback_facebook(request: Request, code: Optional[str] = None) -> RedirectResponse:
+async def sns_callback_facebook(request: Request, code: Optional[str] = None, state: Optional[str] = None) -> RedirectResponse:
     """Facebook OAuth 콜백. 토큰 저장 후 프론트 설정 화면으로."""
     from urllib.parse import quote
     if not code:
         raise HTTPException(status_code=400, detail="code missing")
     base = str(request.base_url).rstrip("/")
     redirect_uri = f"{base}/api/sns/callback/facebook"
-    result = await sns_auth.exchange_facebook_code(code, redirect_uri)
     front = (base.rsplit("/api/", 1)[0] or base).rstrip("/")
+    app_id_arg = app_secret_arg = None
+    if state and state in SNS_PENDING and SNS_PENDING[state].get("platform") == "facebook":
+        cred = SNS_PENDING.pop(state, None)
+        if cred:
+            app_id_arg = cred.get("app_id")
+            app_secret_arg = cred.get("app_secret")
+    result = await sns_auth.exchange_facebook_code(code, redirect_uri, app_id=app_id_arg, app_secret=app_secret_arg)
     if result.get("error"):
         return RedirectResponse(f"{front}/?sns_error=" + quote(result["error"]) + "#settings")
     name = result.get("name", "Facebook")
@@ -437,28 +487,37 @@ async def sns_callback_facebook(request: Request, code: Optional[str] = None) ->
 
 
 @app.get("/api/sns/auth/threads")
-async def sns_auth_threads(request: Request) -> Response:
-    """Threads OAuth URL로 리다이렉트."""
+async def sns_auth_threads(request: Request, state: Optional[str] = None) -> Response:
+    """Threads OAuth URL로 리다이렉트. state 있으면 UI에서 넣은 앱 키 사용."""
     base = str(request.base_url).rstrip("/")
+    front = (base.rsplit("/api/", 1)[0] or base).rstrip("/")
     redirect_uri = f"{base}/api/sns/callback/threads"
-    url = sns_threads_youtube.build_threads_auth_url(redirect_uri)
+    app_id_arg = None
+    state_arg = state
+    if state and state in SNS_PENDING and SNS_PENDING[state].get("platform") == "threads":
+        app_id_arg = SNS_PENDING[state].get("app_id")
+    url = sns_threads_youtube.build_threads_auth_url(redirect_uri, app_id=app_id_arg, state=state_arg)
     if not url:
-        raise HTTPException(
-            status_code=503,
-            detail="THREADS_APP_ID를 설정해주세요. (Meta 앱 대시보드에서 Threads API 사용 설정)",
-        )
+        from urllib.parse import quote
+        return RedirectResponse(f"{front}/?sns_error=" + quote("Threads 앱 키가 없습니다. 아래 '연동이 안 되나요?'에서 앱 키를 입력한 뒤 다시 연결해주세요.") + "#sns")
     return RedirectResponse(url=url)
 
 
 @app.get("/api/sns/callback/threads")
-async def sns_callback_threads(request: Request, code: Optional[str] = None, error: Optional[str] = None) -> RedirectResponse:
+async def sns_callback_threads(request: Request, code: Optional[str] = None, error: Optional[str] = None, state: Optional[str] = None) -> RedirectResponse:
     from urllib.parse import quote
     base = str(request.base_url).rstrip("/")
     front = (base.rsplit("/api/", 1)[0] or base).rstrip("/")
     if error or not code:
         return RedirectResponse(f"{front}/?sns_error=" + quote(error or "code missing") + "#settings")
     redirect_uri = f"{base}/api/sns/callback/threads"
-    result = await sns_threads_youtube.exchange_threads_code(code, redirect_uri)
+    app_id_arg = app_secret_arg = None
+    if state and state in SNS_PENDING and SNS_PENDING[state].get("platform") == "threads":
+        cred = SNS_PENDING.pop(state, None)
+        if cred:
+            app_id_arg = cred.get("app_id")
+            app_secret_arg = cred.get("app_secret")
+    result = await sns_threads_youtube.exchange_threads_code(code, redirect_uri, app_id=app_id_arg, app_secret=app_secret_arg)
     if result.get("error"):
         return RedirectResponse(f"{front}/?sns_error=" + quote(result["error"]) + "#settings")
     name = result.get("name", "Threads")
@@ -466,28 +525,37 @@ async def sns_callback_threads(request: Request, code: Optional[str] = None, err
 
 
 @app.get("/api/sns/auth/youtube")
-async def sns_auth_youtube(request: Request) -> Response:
-    """YouTube(Google) OAuth URL로 리다이렉트."""
+async def sns_auth_youtube(request: Request, state: Optional[str] = None) -> Response:
+    """YouTube(Google) OAuth URL로 리다이렉트. state 있으면 UI에서 넣은 클라이언트 ID 사용."""
     base = str(request.base_url).rstrip("/")
+    front = (base.rsplit("/api/", 1)[0] or base).rstrip("/")
     redirect_uri = f"{base}/api/sns/callback/youtube"
-    url = sns_threads_youtube.build_youtube_auth_url(redirect_uri)
+    client_id_arg = None
+    state_arg = state
+    if state and state in SNS_PENDING and SNS_PENDING[state].get("platform") == "youtube":
+        client_id_arg = SNS_PENDING[state].get("client_id")
+    url = sns_threads_youtube.build_youtube_auth_url(redirect_uri, client_id=client_id_arg, state=state_arg)
     if not url:
-        raise HTTPException(
-            status_code=503,
-            detail="GOOGLE_CLIENT_ID를 설정해주세요. (Google Cloud Console에서 YouTube API 사용 설정)",
-        )
+        from urllib.parse import quote
+        return RedirectResponse(f"{front}/?sns_error=" + quote("YouTube 앱 키가 없습니다. 아래 '연동이 안 되나요?'에서 앱 키를 입력한 뒤 다시 연결해주세요.") + "#sns")
     return RedirectResponse(url=url)
 
 
 @app.get("/api/sns/callback/youtube")
-async def sns_callback_youtube(request: Request, code: Optional[str] = None, error: Optional[str] = None) -> RedirectResponse:
+async def sns_callback_youtube(request: Request, code: Optional[str] = None, error: Optional[str] = None, state: Optional[str] = None) -> RedirectResponse:
     from urllib.parse import quote
     base = str(request.base_url).rstrip("/")
     front = (base.rsplit("/api/", 1)[0] or base).rstrip("/")
     if error or not code:
         return RedirectResponse(f"{front}/?sns_error=" + quote(error or "code missing") + "#settings")
     redirect_uri = f"{base}/api/sns/callback/youtube"
-    result = await sns_threads_youtube.exchange_youtube_code(code, redirect_uri)
+    client_id_arg = client_secret_arg = None
+    if state and state in SNS_PENDING and SNS_PENDING[state].get("platform") == "youtube":
+        cred = SNS_PENDING.pop(state, None)
+        if cred:
+            client_id_arg = cred.get("client_id")
+            client_secret_arg = cred.get("client_secret")
+    result = await sns_threads_youtube.exchange_youtube_code(code, redirect_uri, client_id=client_id_arg, client_secret=client_secret_arg)
     if result.get("error"):
         return RedirectResponse(f"{front}/?sns_error=" + quote(result["error"]) + "#settings")
     name = result.get("name", "YouTube")

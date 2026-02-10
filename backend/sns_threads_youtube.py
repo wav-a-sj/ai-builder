@@ -33,16 +33,23 @@ def get_threads_credentials() -> tuple[Optional[str], Optional[str]]:
     return app_id, app_secret
 
 
-def build_threads_auth_url(redirect_uri: str) -> Optional[str]:
-    app_id, _ = get_threads_credentials()
+def build_threads_auth_url(redirect_uri: str, app_id: Optional[str] = None, state: Optional[str] = None) -> Optional[str]:
+    app_id = (app_id or "").strip() or get_threads_credentials()[0]
     if not app_id:
         return None
     scope = "threads_basic,threads_content_publish"
-    return f"{THREADS_OAUTH_URL}?client_id={app_id}&redirect_uri={redirect_uri}&scope={scope}&response_type=code"
+    url = f"{THREADS_OAUTH_URL}?client_id={app_id}&redirect_uri={redirect_uri}&scope={scope}&response_type=code"
+    if state:
+        from urllib.parse import quote
+        url += "&state=" + quote(state)
+    return url
 
 
-async def exchange_threads_code(code: str, redirect_uri: str) -> Dict[str, Any]:
-    app_id, app_secret = get_threads_credentials()
+async def exchange_threads_code(
+    code: str, redirect_uri: str, app_id: Optional[str] = None, app_secret: Optional[str] = None
+) -> Dict[str, Any]:
+    app_id = (app_id or "").strip() or get_threads_credentials()[0]
+    app_secret = (app_secret or "").strip() or get_threads_credentials()[1]
     if not app_id or not app_secret:
         return {"error": "THREADS_APP_ID or THREADS_APP_SECRET not set"}
     # code에서 #_ 제거 (Meta 문서 참고)
@@ -138,8 +145,8 @@ def get_youtube_credentials() -> tuple[Optional[str], Optional[str]]:
     return cid, secret
 
 
-def build_youtube_auth_url(redirect_uri: str, state: Optional[str] = None) -> Optional[str]:
-    cid, _ = get_youtube_credentials()
+def build_youtube_auth_url(redirect_uri: str, client_id: Optional[str] = None, state: Optional[str] = None) -> Optional[str]:
+    cid = (client_id or "").strip() or get_youtube_credentials()[0]
     if not cid:
         return None
     from urllib.parse import urlencode
@@ -156,8 +163,11 @@ def build_youtube_auth_url(redirect_uri: str, state: Optional[str] = None) -> Op
     return GOOGLE_AUTH_URL + "?" + urlencode(params)
 
 
-async def exchange_youtube_code(code: str, redirect_uri: str) -> Dict[str, Any]:
-    cid, secret = get_youtube_credentials()
+async def exchange_youtube_code(
+    code: str, redirect_uri: str, client_id: Optional[str] = None, client_secret: Optional[str] = None
+) -> Dict[str, Any]:
+    cid = (client_id or "").strip() or get_youtube_credentials()[0]
+    secret = (client_secret or "").strip() or get_youtube_credentials()[1]
     if not cid or not secret:
         return {"error": "GOOGLE_CLIENT_ID or GOOGLE_CLIENT_SECRET not set"}
     async with httpx.AsyncClient() as client:

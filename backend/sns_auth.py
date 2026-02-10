@@ -49,17 +49,24 @@ def get_facebook_app_credentials() -> tuple[Optional[str], Optional[str]]:
     return app_id, app_secret
 
 
-def build_facebook_auth_url(redirect_uri: str) -> Optional[str]:
-    app_id, _ = get_facebook_app_credentials()
+def build_facebook_auth_url(redirect_uri: str, app_id: Optional[str] = None, state: Optional[str] = None) -> Optional[str]:
+    app_id = (app_id or "").strip() or get_facebook_app_credentials()[0]
     if not app_id:
         return None
     scopes = "pages_show_list,pages_read_engagement,pages_manage_posts,pages_messaging,read_insights,instagram_basic,instagram_content_publish,instagram_manage_insights"
-    return f"{FB_OAUTH_URL}?client_id={app_id}&redirect_uri={redirect_uri}&scope={scopes}&response_type=code"
+    url = f"{FB_OAUTH_URL}?client_id={app_id}&redirect_uri={redirect_uri}&scope={scopes}&response_type=code"
+    if state:
+        from urllib.parse import quote
+        url += "&state=" + quote(state)
+    return url
 
 
-async def exchange_facebook_code(code: str, redirect_uri: str) -> Dict[str, Any]:
+async def exchange_facebook_code(
+    code: str, redirect_uri: str, app_id: Optional[str] = None, app_secret: Optional[str] = None
+) -> Dict[str, Any]:
     """코드로 액세스 토큰 교환 후 페이지 목록 조회. 첫 페이지 토큰 저장."""
-    app_id, app_secret = get_facebook_app_credentials()
+    app_id = (app_id or "").strip() or get_facebook_app_credentials()[0]
+    app_secret = (app_secret or "").strip() or get_facebook_app_credentials()[1]
     if not app_id or not app_secret:
         return {"error": "FACEBOOK_APP_ID or FACEBOOK_APP_SECRET not set"}
 
