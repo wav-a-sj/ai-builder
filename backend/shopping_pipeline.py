@@ -613,7 +613,9 @@ def _gemini_rest_generate(
         payload: Dict[str, Any] = {"contents": [{"parts": parts}]}
         if generation_config:
             payload["generationConfig"] = generation_config
-        with httpx.Client(timeout=90) as client:
+        # 이미지 생성은 더 오래 걸릴 수 있으므로 타임아웃을 60초로 설정
+        timeout = 60.0 if "image" in model.lower() else 30.0
+        with httpx.Client(timeout=timeout) as client:
             r = client.post(
                 f"https://generativelanguage.googleapis.com/v1beta/models/{model}:generateContent",
                 headers={"x-goog-api-key": api_key, "Content-Type": "application/json"},
@@ -621,7 +623,14 @@ def _gemini_rest_generate(
             )
             r.raise_for_status()
             return r.json()
-    except Exception:
+    except httpx.TimeoutException:
+        print(f"[Gemini API] 타임아웃: {model}")
+        return None
+    except httpx.HTTPStatusError as e:
+        print(f"[Gemini API] HTTP 오류 ({e.response.status_code}): {model}")
+        return None
+    except Exception as e:
+        print(f"[Gemini API] 오류 ({model}): {type(e).__name__}: {str(e)[:100]}")
         return None
 
 
@@ -686,6 +695,7 @@ def generate_background_gemini(
         )
         # gemini-2.5-flash-image: 이미지 생성 전용 모델 (responseModalities 필요)
         img_config = {"responseModalities": ["TEXT", "IMAGE"]}
+        print("[배경 생성] gemini-2.5-flash-image 시도 중...")
         resp = _gemini_rest_generate(
             gemini_api_key,
             "gemini-2.5-flash-image",
@@ -693,6 +703,7 @@ def generate_background_gemini(
             generation_config=img_config,
         )
         if not resp:
+            print("[배경 생성] gemini-2.5-flash-image 실패, gemini-3-pro-image-preview 시도 중...")
             # 폴백: gemini-3-pro-image-preview
             resp = _gemini_rest_generate(
                 gemini_api_key,
@@ -701,16 +712,21 @@ def generate_background_gemini(
                 generation_config=img_config,
             )
         if not resp:
+            print("[배경 생성] Gemini API 호출 실패 - 폴백 그라데이션 사용")
             return None
+        # 응답에서 이미지 데이터 추출
         for c in resp.get("candidates", []):
             for p in c.get("content", {}).get("parts", []):
                 inline = p.get("inlineData") or p.get("inline_data")
                 if inline:
                     b64 = inline.get("data")
                     if b64:
+                        print("[배경 생성] 성공")
                         return base64.b64decode(b64)
+        print("[배경 생성] 응답에 이미지 데이터 없음 - 폴백 그라데이션 사용")
         return None
-    except Exception:
+    except Exception as e:
+        print(f"[배경 생성] 예외 발생: {type(e).__name__}: {str(e)[:200]}")
         return None
 
 
@@ -917,11 +933,17 @@ async def run_pipeline(
         on_progress("background", 60)
 
     # 4. 배경 생성 (blocking)
-    bg_png = await asyncio.to_thread(
-        generate_background_gemini, concept, gemini_api_key
-    )
+    try:
+        bg_png = await asyncio.to_thread(
+            generate_background_gemini, concept, gemini_api_key
+        )
+    except Exception as e:
+        print(f"[배경 생성] asyncio.to_thread 오류: {type(e).__name__}: {str(e)[:200]}")
+        bg_png = None
+    
     if not bg_png and HAS_PIL:
         # Gemini 이미지 생성 실패 시: 은은한 그라데이션 폴백
+        print("[배경 생성] 폴백 그라데이션 배경 생성 중...")
         top, bottom = (252, 250, 255), (240, 242, 248)
         bg = Image.new("RGB", (1000, 1000))
         px = bg.load()
@@ -933,8 +955,9 @@ async def run_pipeline(
         out = io.BytesIO()
         bg.save(out, format="PNG")
         bg_png = out.getvalue()
+        print("[배경 생성] 폴백 그라데이션 배경 생성 완료")
     if not bg_png:
-        return (None, "배경 생성 실패")
+        return (None, "배경 생성 실패 (Gemini API 오류 및 PIL 없음)")
 
     if on_progress:
         on_progress("composite", 85)
