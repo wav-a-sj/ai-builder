@@ -808,9 +808,33 @@ def composite_thumbnail(product_png: bytes, background_png: bytes, core_colors: 
         bg = bg.resize((1000, 1000), Image.Resampling.LANCZOS)
 
         product = Image.open(io.BytesIO(product_png)).convert("RGBA")
-        # 제품을 붉은 박스 크기 수준으로 (캔버스에 꽉 차게, 1000x1000)
-        ratio = min(1000 / product.height, 1000 / product.width, 1.0)
-        nw, nh = int(product.width * ratio), int(product.height * ratio)
+        # 제품을 최대한 크게 (캔버스의 90% 이상, 최대 950px) - 꽉 차게
+        # 높이와 너비 중 더 긴 쪽을 기준으로 스케일링
+        target_size = 950  # 캔버스 1000px의 95% (여유 공간 50px)
+        min_size = 900  # 최소 90% 보장
+        
+        # 더 긴 쪽을 target_size에 맞추고, 짧은 쪽은 비율 유지
+        if product.height >= product.width:
+            # 세로가 더 긴 경우: 높이를 target_size에 맞춤
+            ratio = target_size / product.height
+            nh = target_size
+            nw = int(product.width * ratio)
+            # 최소 크기 보장: 너비가 너무 작으면 높이를 조정
+            if nw < min_size:
+                ratio = min_size / product.width
+                nw = min_size
+                nh = int(product.height * ratio)
+        else:
+            # 가로가 더 긴 경우: 너비를 target_size에 맞춤
+            ratio = target_size / product.width
+            nw = target_size
+            nh = int(product.height * ratio)
+            # 최소 크기 보장: 높이가 너무 작으면 너비를 조정
+            if nh < min_size:
+                ratio = min_size / product.height
+                nh = min_size
+                nw = int(product.width * ratio)
+        
         product = product.resize((nw, nh), Image.Resampling.LANCZOS)
 
         x = (1000 - nw) // 2
