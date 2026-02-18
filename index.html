@@ -1176,7 +1176,7 @@
     const SYSTEM_INSTRUCTION = `You are an expert web designer creating PREMIUM ad creatives. Output ONLY the TEXT/OVERLAY HTML in markdown code blocks. NO <html>, <head>, <body>. The system provides the background.
 QUALITY RULES: 1. font-family: 'Pretendard', sans-serif; 2. When "이미지 추가", add bottom section with {{IMAGE_1}}, {{IMAGE_2}} in a grid.
 CRITICAL - EXACT TEXT: ALL text/copy provided by the user (L1, L2, L3, CTA, headlines, etc.) MUST be reproduced CHARACTER-FOR-CHARACTER. NEVER add any text, slogan, or element not explicitly in the user request. Never paraphrase. Never substitute similar Korean chars (인터넷≠인테로, 현금≠형금, 요금≠유룸, 설계≠실험). Copy exactly. Zero tolerance for extra text.
-MULTI-VARIATION MODE: When asked for "여러 시안" or "3가지" etc., output 3 DIFFERENT variations. Each in its own code block: \`\`\`html ... \`\`\` \`\`\`html ... \`\`\` \`\`\`html ... \`\`\`. Different layouts/colors each.
+MULTI-VARIATION MODE: When asked for "여러 시안" or "3가지" or "4개 소재" etc., output as many DIFFERENT designs as requested (3 or 4 or 5). Each in its own code block: \`\`\`html ... \`\`\` \`\`\`html ... \`\`\` ... Different layouts/colors each. If the user listed "소재 1" "소재 2" "소재 3" "소재 4", output 4 DISTINCT creatives matching each 소재 concept — not variations of one.
 MODIFICATION MODE: Change ONLY the requested part. Output the modified overlay HTML only (single block).
 ADDITION MODE: Output NEW overlay. If user wants "다른 버전/비교/추가" without new copy, REUSE the exact same text from the reference. Only vary layout/colors. Never invent new text.`;
 
@@ -1516,6 +1516,8 @@ ADDITION MODE: Output NEW overlay. If user wants "다른 버전/비교/추가" w
     function getMultiRequestCount(text) {
       const m = text.match(/(?:한번에\s*)?(\d)\s*개\s*(?:동시에\s*)?(?:작업|만들|해줘)/i);
       if (m) return Math.min(5, Math.max(2, parseInt(m[1], 10)));
+      const mSojae = text.match(/소재\s*(\d)\s*개|(\d)\s*개\s*소재/i);
+      if (mSojae) return Math.min(5, Math.max(2, parseInt(mSojae[1] || mSojae[2], 10)));
       const m3 = text.match(/(\d)\s*안\s*(?:으로\s*)?(?:생성|만들|해줘)/i);
       if (m3) return Math.min(5, Math.max(2, parseInt(m3[1], 10)));
       if (/세\s*가지\s*(?:동시에|한번에|작업)/i.test(text)) return 3;
@@ -1523,6 +1525,13 @@ ADDITION MODE: Output NEW overlay. If user wants "다른 버전/비교/추가" w
       if (/네\s*가지\s*(?:동시에|한번에|작업)/i.test(text)) return 4;
       const m2 = text.match(/(\d)\s*개\s*(?:동시에|한번에)/i);
       if (m2) return Math.min(5, Math.max(2, parseInt(m2[1], 10)));
+      // "소재 1." "소재 2." ... 구조에서 개수 추출 (4개 소재 → 4)
+      const sojaeHeadings = text.match(/(?:###\s*)?소재\s*[1-5]\s*[.)\]]/g);
+      if (sojaeHeadings && sojaeHeadings.length >= 2) {
+        const nums = sojaeHeadings.map(s => parseInt(s.replace(/\D/g, ''), 10)).filter(n => n >= 1 && n <= 5);
+        const maxNum = nums.length ? Math.max(...nums) : 0;
+        if (maxNum >= 2) return Math.min(5, maxNum);
+      }
       return 0;
     }
     function getImageRequestCount(text) {
@@ -1530,6 +1539,8 @@ ADDITION MODE: Output NEW overlay. If user wants "다른 버전/비교/추가" w
       const m1 = text.match(/(\d)\s*장\s*(?:생성|만들|해줘|이미지)/i) || text.match(/(?:이미지|생성)\s*(\d)\s*장/i);
       if (m1) return Math.min(5, Math.max(1, parseInt(m1[1], 10)));
       if (/한\s*장|1\s*장|한\s*개|1\s*개|한\s*장만|1\s*장만/i.test(text)) return 1;
+      const mSojae = text.match(/소재\s*(\d)\s*개|(\d)\s*개\s*소재|(?:소재\s*)?(\d)\s*개\s*(?:시안|생성|만들)/i);
+      if (mSojae) return Math.min(5, Math.max(1, parseInt(mSojae[1] || mSojae[2] || mSojae[3], 10)));
       const multi = getMultiRequestCount(text);
       if (multi >= 2) return multi;
       return 0;
@@ -1575,12 +1586,28 @@ ADDITION MODE: Output NEW overlay. If user wants "다른 버전/비교/추가" w
       return { meta: `모드: ${activeMenu === 'cardnews' ? '카드뉴스' : '이미지'} (규칙 자동 적용)`, finalPrompt: effectivePrompt };
     }
     function parseMultiRequests(text, n) {
+      // 다양한 패턴으로 분리 시도: "소재 1.", "이미지 1.", "시안 1.", "디자인 1.", "크리에이티브 1." 등
+      const patterns = [
+        /\n\s*###\s*(?:소재|이미지|시안|디자인|크리에이티브|광고|배너|소재|컨셉)\s*[1-5]\s*[.)]\s*/i,
+        /\n\s*(?:소재|이미지|시안|디자인|크리에이티브|광고|배너|컨셉)\s*[1-5]\s*[.)]\s*/i,
+        /\n\s*[1-5]\s*[.)]\s*(?:소재|이미지|시안|디자인|크리에이티브|광고|배너|컨셉)\s*[1-5]?\s*[.:]\s*/i,
+      ];
+      for (const pattern of patterns) {
+        const split = text.split(pattern);
+        if (split.length >= n + 1) {
+          const cleaned = split.slice(1).map(s => s.trim()).filter(s => s.length > 20);
+          if (cleaned.length >= n) return cleaned.slice(0, n);
+        }
+      }
+      // 숫자. 패턴으로 분리 (1. 2. 3. 4.)
       const parts = text.split(/\s*(?=[1-5][.)]\s*)/).filter(s => s.trim());
       const cleaned = parts.map(s => s.replace(/^[1-5][.)]\s*/, '').trim()).filter(Boolean);
-      const valid = cleaned.filter(p => p.length > 3 && !/^\d\s*개\s*작업/i.test(p));
+      const valid = cleaned.filter(p => p.length > 20 && !/^\d\s*개\s*작업/i.test(p));
       if (valid.length >= n) return valid.slice(0, n);
-      const byNewline = text.split(/\n\s*[-–—]\s*\n|\n{2,}/).map(s => s.trim()).filter(s => s.length > 3);
+      // 큰 줄바꿈으로 분리
+      const byNewline = text.split(/\n\s*[-–—]\s*\n|\n{3,}/).map(s => s.trim()).filter(s => s.length > 20);
       if (byNewline.length >= n) return byNewline.slice(0, n);
+      // 분리 실패 시 null 반환 (Gemini가 전체를 분석하도록)
       return null;
     }
 
@@ -3267,23 +3294,97 @@ ADDITION MODE: Output NEW overlay. If user wants "다른 버전/비교/추가" w
         const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${apiKey}`;
         let sysPrompt;
         if (activeMenu === 'video' && askConfirmation) {
-          sysPrompt = `당신은 숏폼·광고 영상 기획 전문가입니다. 사용자 요청을 **그대로 복사·요약하지 말고**, 당신이 영상 관점에서 해석하고 보완한 내용으로 답하세요.
+          sysPrompt = `당신은 숏폼·광고 영상 기획 전문가입니다. 사용자 요청을 분석하고, **구조화된 영상 전략 및 구성안**을 제공하세요.
+
+## 출력 형식 (반드시 이 구조로 작성):
+
+### 1. 영상 비전 분석
+- **클라이언트/주제:** [대상 또는 주제]
+- **타겟 시청자:** [타겟층]
+- **프로젝트 목표:** [목표]
+- **플랫폼/비율:** [예: 인스타 릴스 9:16, 유튜브 숏스 등]
+
+### 2. 장면/컷별 구성
+요청된 영상의 흐름을 구체적으로 나열:
+- **장면 1:** [내용, 분위기, 시각/자막 포인트]
+- **장면 2:** [내용, 분위기, 시각/자막 포인트]
+- (요청에 맞는 개수만큼)
+
+### 3. 영상 디자인 전략
+- **총 길이/장면 수:** [제안]
+- **분위기·BGM:** [톤앤매너]
+- **자막·텍스트:** [강조 포인트]
+- **전환·리듬:** [컷 전환, 페이싱]
 
 규칙:
-- 사용자가 말한 내용을 "~해주세요라고 하셨습니다" 식으로 반복하지 말 것.
-- 사용자 의도를 파악한 뒤, **당신이 제안하는** 영상 구성을 구체적으로 서술할 것. (예: 총 길이, 장면 수, 컷별 내용, 분위기·BGM·자막 포인트 등)
-- ##, ### 로 섹션을 나누고, 마크다운(**굵게** 등)을 사용해 읽기 쉽게 작성할 것.
-- 전문가로서 "이렇게 만들면 좋겠다"는 식의 **당신의 구체안**을 2~4문단 정도로 제시한 뒤, 마지막에만 "이렇게 생성해드릴까요?"로 끝낼 것.`;
+- 사용자 요청을 **그대로 복사하지 말고**, 영상 관점에서 해석·보완
+- ##, ###, **굵게** 등 마크다운을 활용해 읽기 쉽게
+- 전문가로서 구체적인 제안을 제시한 뒤, 마지막에 "이렇게 생성해드릴까요?"로 끝낼 것`;
+        } else if (activeMenu === 'cardnews' && askConfirmation) {
+          sysPrompt = `당신은 카드뉴스·인포그래픽 디자인 전문가입니다. 사용자 요청을 분석하고, **구조화된 카드뉴스 전략 및 슬라이드 구성안**을 제공하세요.
+
+## 출력 형식 (반드시 이 구조로 작성):
+
+### 1. 카드뉴스 비전 분석
+- **주제/클라이언트:** [주제 또는 브랜드]
+- **타겟 독자:** [타겟층]
+- **프로젝트 목표:** [목표]
+- **슬라이드 수/비율:** [예: 5장, 4:5 인스타]
+
+### 2. 슬라이드별 구성
+각 슬라이드의 역할과 내용을 명확히 나열:
+- **슬라이드 1 (인트로):** [제목/키 비주얼, 분위기]
+- **슬라이드 2:** [제목, 본문 요지, 배경 이미지 컨셉]
+- **슬라이드 3:** [제목, 본문 요지, 배경 이미지 컨셉]
+- (요청된 장수만큼)
+
+### 3. 디자인 전략
+- **컬러:** [색상 팔레트 및 톤]
+- **타이포그래피:** [제목/본문 폰트, 위계]
+- **레이아웃:** [구성 방식, 그라데이션 오버레이 등]
+- **비율:** [4:5 등]
+
+규칙:
+- 사용자 요청을 **그대로 복사하지 말고**, 카드뉴스 관점에서 해석·보완
+- ##, ###, **굵게** 등 마크다운을 활용해 읽기 쉽게
+- 전문가로서 구체적인 제안을 제시한 뒤, 마지막에 "이렇게 생성해드릴까요?"로 끝낼 것`;
         } else if (askConfirmation) {
-          sysPrompt = `당신은 광고·카드뉴스 디자인 전문가입니다. 사용자 요청을 **그대로 복사·요약하지 말고**, 당신이 디자인 관점에서 해석하고 보완한 내용으로 답하세요.
+          sysPrompt = `당신은 광고·카드뉴스 디자인 전문가입니다. 사용자 요청을 분석하고, **구조화된 디자인 전략 및 소재 구성안**을 제공하세요.
+
+## 출력 형식 (반드시 이 구조로 작성):
+
+### 1. 디자인 비전 분석
+- **클라이언트:** [회사/브랜드명]
+- **타겟 고객:** [타겟층]
+- **프로젝트 목표:** [목표]
+- **템플릿 카테고리:** [적합한 카테고리 또는 "맞춤형 디자인 필요"]
+
+### 2. 소재별 디자인 컨셉
+사용자가 요청한 각 소재(이미지/디자인)를 명확히 구분하여 나열:
+- **소재 1. [제목]:** [컨셉, 비주얼, 메인 카피, CTA]
+- **소재 2. [제목]:** [컨셉, 비주얼, 메인 카피, CTA]
+- (요청된 개수만큼)
+
+### 3. 디자인 전략
+- **컬러:** [색상 팔레트 및 용도]
+- **타이포그래피:** [폰트 및 배치]
+- **레이아웃:** [구성 방식]
+- **CTA:** [버튼 스타일]
+- **비율:** [종횡비]
 
 규칙:
-- 사용자가 말한 내용을 "~해주세요라고 하셨습니다" 식으로 반복하지 말 것.
-- 사용자 의도를 파악한 뒤, **당신이 제안하는** 컨셉·톤·색감·레이아웃·타이포·카드별 구성 등을 구체적으로 서술할 것.
-- ##, ### 로 섹션을 나누고, 마크다운(**굵게** 등)을 사용해 읽기 쉽게 작성할 것.
-- 전문가로서 "이렇게 만들면 좋겠다"는 식의 **당신의 구체안**을 2~4문단 정도로 제시한 뒤, 마지막에만 "이렇게 생성해드릴까요?"로 끝낼 것.`;
+- 사용자 요청을 **그대로 복사하지 말고**, 디자인 관점에서 해석·보완
+- 여러 소재가 있으면 각각을 명확히 구분하여 제시
+- ##, ###, **굵게**, `코드` 등 마크다운을 활용해 읽기 쉽게
+- 전문가로서 구체적인 제안을 제시한 뒤, 마지막에 "이렇게 생성해드릴까요?"로 끝낼 것`;
         } else {
-          sysPrompt = `당신은 광고·카드뉴스 디자인 전문가입니다. 사용자 요청을 바탕으로 **당신이 디자인 관점에서 해석·보완한** 가이드를 제공하세요. 사용자 말을 그대로 복사하지 말고, 컨셉·컬러·레이아웃 등을 구체적으로 제안하세요. ##, ###, **굵게** 등 마크다운 사용.`;
+          if (activeMenu === 'video') {
+            sysPrompt = `당신은 숏폼·광고 영상 기획 전문가입니다. 사용자 요청을 바탕으로 **영상 관점에서 해석·보완한** 가이드를 제공하세요. 총 길이, 장면 구성, 분위기·BGM·자막 포인트 등을 구체적으로 제안하세요. ##, ###, **굵게** 등 마크다운 사용.`;
+          } else if (activeMenu === 'cardnews') {
+            sysPrompt = `당신은 카드뉴스·인포그래픽 디자인 전문가입니다. 사용자 요청을 바탕으로 **카드뉴스 관점에서 해석·보완한** 가이드를 제공하세요. 슬라이드별 구성, 컬러·타이포·레이아웃 등을 구체적으로 제안하세요. ##, ###, **굵게** 등 마크다운 사용.`;
+          } else {
+            sysPrompt = `당신은 광고·디자인 전문가입니다. 사용자 요청을 바탕으로 **디자인 관점에서 해석·보완한** 가이드를 제공하세요. 컨셉·컬러·레이아웃 등을 구체적으로 제안하세요. ##, ###, **굵게** 등 마크다운 사용.`;
+          }
         }
         const historyText = chatHistory.length > 0
           ? chatHistory.map(m => `${m.role === 'user' ? '사용자' : 'AI'}: ${m.text}`).join('\n') + '\n\n사용자: ' + prompt
@@ -4016,13 +4117,16 @@ ADDITION MODE: Output NEW overlay. If user wants "다른 버전/비교/추가" w
 
     function buildCardnewsJsonPrompt(slideCount) {
       const n = Math.min(10, Math.max(3, slideCount || 5));
-      return `You are a card news content designer. Given a topic, output a JSON object with exactly ${n} slides for a Korean card news (Instagram 4:5 format).
+      return `You are a premium card news content designer. Given a topic, output a JSON object with exactly ${n} slides for a Korean card news (Instagram 4:5 format).
+
 Output ONLY valid JSON, no markdown code block. Format:
 {"slides":[{"title":"제목","body":"본문 텍스트","imagePrompt":"English prompt for photorealistic background image"}]}
-Rules:
-- Slide 1 (Intro): title only, body empty "". imagePrompt must include "dark moody cinematic" for immersive first impression.
-- Slides 2-${n}: title 10-15 chars, body 1-2 short sentences 30-50 chars.
-- imagePrompt: English, under 80 chars, background only (no text), suitable for 4:5 vertical card.
+
+## Quality Requirements:
+- **Slide 1 (Intro):** title only, body empty "". imagePrompt must include "dark moody cinematic" or "immersive atmospheric" for strong first impression.
+- **Slides 2-${n}:** title 10-15 chars (Korean), body 1-2 short sentences 30-50 chars. Clear hierarchy and readability.
+- **imagePrompt:** English, under 80 chars. Photorealistic background only (no text, no people unless specified). Cohesive color mood across slides. Suitable for 4:5 vertical card with text overlay.
+- **Narrative flow:** Each slide should logically connect; visual style should feel like one series.
 - Exactly ${n} slides. Do NOT use unescaped double quotes inside title, body, or imagePrompt values.`;
     }
     function tryParseCardnewsJson(jsonText) {
@@ -4347,9 +4451,25 @@ ${refOverlay}
 
 [출력] 동일 텍스트 사용, 레이아웃·색상만 다른 새 오버레이 HTML 1개.`;
       } else if (multiCount >= 2) {
-        finalPrompt = `[광고 소재 제작 - ${multiCount}개 동시 작업]
+        const parsed = parseMultiRequests(userPrompt, multiCount);
+        if (parsed && parsed.length >= 2) {
+          // 명확히 분리된 경우: 각각을 별도 요청으로
+          finalPrompt = `[광고 소재 제작 - ${multiCount}개 동시 작업]
 
-사용자가 ${multiCount}개의 서로 다른 디자인을 한번에 요청했습니다. 아래 메시지에서 ${multiCount}개의 요청을 파악하고, 각각에 맞는 디자인을 만들어주세요.
+사용자가 ${multiCount}개의 서로 다른 디자인을 한번에 요청했습니다. 아래 ${multiCount}개의 요청을 각각 독립적인 디자인으로 만들어주세요.
+
+⚠️ 각 요청의 문구는 글자 그대로 사용. 한 글자도 바꾸지 마세요.
+
+${parsed.map((req, i) => `--- 요청 ${i + 1} ---\n${req}`).join('\n\n')}
+
+[출력] ${multiCount}개의 html 코드 블록으로 구분해 출력. \`\`\`html ... \`\`\` \`\`\`html ... \`\`\` ...`;
+        } else {
+          // 분리 실패: Gemini가 분석하도록
+          finalPrompt = `[광고 소재 제작 - ${multiCount}개 동시 작업]
+
+사용자가 ${multiCount}개의 서로 다른 디자인을 한번에 요청했습니다. 아래 메시지를 분석해서 ${multiCount}개의 독립적인 디자인 요청으로 나눠 인식하고, 각각에 맞는 디자인을 만들어주세요.
+
+요청이 "소재 1", "이미지 1", "시안 1" 같은 형태로 구분되어 있거나, 큰 줄바꿈이나 번호(1. 2. 3. 4.)로 구분되어 있다면 그대로 ${multiCount}개로 나눠서 각각 다른 디자인으로 만들어주세요.
 
 ⚠️ 각 요청의 문구는 글자 그대로 사용. 한 글자도 바꾸지 마세요.
 
@@ -4358,6 +4478,7 @@ ${userPrompt}
 ---
 
 [출력] ${multiCount}개의 html 코드 블록으로 구분해 출력. \`\`\`html ... \`\`\` \`\`\`html ... \`\`\` ...`;
+        }
       } else {
         finalPrompt = `[광고 소재 제작 - 1행 여러 시안]
 
@@ -5195,7 +5316,17 @@ CRITICAL: Keep ALL other elements (text, colors, layout) the same. Only change w
               let imageUrl = GEMINI_IMAGE_FALLBACK;
               const firstSlidePrompt = i === 0 ? 'Dark moody cinematic atmosphere. ' : '';
               try {
-                imageUrl = await generateGeminiImage(apiKey, `Create a photorealistic background image. NO text. 4:5 vertical Instagram style. ${firstSlidePrompt}${imgPrompt}`, '4:5');
+                const cardnewsImgPrompt = `Create a premium photorealistic background image for a Korean card news slide. NO text, NO letters, NO overlays.
+
+## Requirements:
+- Aspect: 4:5 vertical (Instagram card style)
+- Style: High-quality, professional-grade. Cohesive mood and color with the card news series.
+- Composition: Balanced, space reserved for text overlay at bottom. No busy center that would clash with title/body.
+- Lighting: Professional, atmospheric. ${firstSlidePrompt}
+- Image prompt to follow: ${imgPrompt}
+
+CRITICAL: Pure background image only. Zero text. Output: One photorealistic image.`;
+                imageUrl = await generateGeminiImage(apiKey, cardnewsImgPrompt, '4:5');
                 if (i > 0) await sleep(IMAGE_REQUEST_DELAY_MS || 800);
               } catch (e) {
                 addSystemMessage(`배경 이미지 생성 실패: ${e?.message || e}`);
@@ -5225,25 +5356,98 @@ CRITICAL: Keep ALL other elements (text, colors, layout) the same. Only change w
           const wantsNoText = /텍스트\s*없|텍스트\s*삭제|글자\s*없|문구\s*없|캡션\s*없|텍스트\s*제거|글씨\s*없/i.test(effectivePrompt);
           const needsText = !wantsNoText && isAdStyleRequest(effectivePrompt);
           const imgPrompt = needsText
-            ? `Create a complete Korean web advertisement banner as a single, high-quality image. Describe and render the scene following the design brief exactly.
+            ? `Create a premium Korean web advertisement banner as a single, high-quality photorealistic image. Follow the design brief with precision and attention to detail.
 
-=== DESIGN BRIEF (반드시 정확히 따를 것) ===
+=== DESIGN BRIEF (Follow exactly) ===
 ${effectivePrompt}
 === END DESIGN BRIEF ===
 
-CRITICAL: Include ONLY the text explicitly specified in the brief. NEVER add any text not in the user's request. Aspect: ${aspectRatio}. Output: One photorealistic ad image. No HTML.`
+## Image Quality Requirements:
+- **Photorealistic quality:** High-resolution, professional-grade image
+- **Composition:** Balanced, visually appealing layout with clear focal points
+- **Lighting:** Professional lighting that enhances the mood and readability
+- **Color grading:** Premium, cohesive color palette that matches the brand
+- **Typography:** All Korean (한글) text must be rendered EXACTLY as written — sharp, legible, correctly spelled. Use professional Korean fonts.
+- **Text placement:** Strategic positioning for maximum impact and readability
+- **Visual hierarchy:** Clear emphasis on key messages and CTA
+
+## Technical Specifications:
+- Aspect ratio: ${aspectRatio}
+- Output: Single photorealistic ad image (no HTML, no code)
+- Text: Include ONLY the text explicitly specified in the brief. NEVER add extra text.
+
+CRITICAL: Render all Korean (한글) text EXACTLY as written — sharp, legible, correct. Do not replace or misspell any 한글 characters.`
             : `Create a single high-quality photorealistic image. NO text, NO overlay, NO captions, NO slogans, NO buttons. Just the image itself.
 
-=== USER REQUEST (반드시 따를 것) ===
+=== USER REQUEST (Follow exactly) ===
 ${effectivePrompt}
 === END REQUEST ===
+
+## Image Quality Requirements:
+- **Photorealistic quality:** High-resolution, professional-grade image
+- **Composition:** Balanced, visually appealing layout
+- **Lighting:** Professional lighting that enhances the mood
+- **Color grading:** Premium, cohesive color palette
 
 CRITICAL: Pure image only. Zero text. No words, letters, or typography. Aspect: ${aspectRatio}. Output: One photorealistic image. No HTML.`;
 
           const count = useParallel && parsedRequests ? parsedRequests.length : (multiCount >= 2 ? multiCount : reqCount);
-          const variationHints = ['[Variation 1 - Trend Design] Modern, dynamic layout. Same content, different visual style.', '[Variation 2 - Premium Design] Elegant, premium feel. Same content, different layout and color accents.', '[Variation 3 - Direct Creative] Bold, direct messaging. Same content, different composition.'];
+          const variationHints = ['[Variation 1 - Trend Design] Modern, dynamic layout. Same content, different visual style.', '[Variation 2 - Premium Design] Elegant, premium feel. Same content, different layout and color accents.', '[Variation 3 - Direct Creative] Bold, direct messaging. Same content, different composition.', '[Variation 4]', '[Variation 5]'];
+          const koreanTextInstruction = ' CRITICAL: Render all Korean (한글) text EXACTLY as written in the brief. Korean characters must be sharp, legible, and correct. Do not replace or misspell any 한글.';
           const prompts = useParallel && parsedRequests
-            ? parsedRequests.map((r) => `[MANDATORY] Create Korean web ad as SINGLE image. SAME design brief for ALL - only vary layout/colors. Use ONLY text from the brief - NEVER add extra text. Follow:\n---\n${r}\n---\nAspect: ${aspectRatio}.`)
+            ? parsedRequests.map((r, i) => `[MANDATORY] Create a premium Korean web advertisement as a SINGLE high-quality photorealistic image.
+
+This is creative ${i + 1} of ${parsedRequests.length} — each creative has a DIFFERENT concept, visual, and copy. Follow ONLY this brief (ignore the others).
+
+=== CREATIVE ${i + 1} BRIEF (Follow exactly) ===
+${r}
+=== END BRIEF ===
+
+## Image Quality Requirements:
+- **Photorealistic quality:** High-resolution, professional-grade
+- **Composition:** Balanced layout with clear focal points
+- **Lighting:** Professional lighting enhancing mood and readability
+- **Color grading:** Premium, cohesive palette matching brand identity
+- **Typography:** All Korean (한글) text rendered EXACTLY as written — sharp, legible, correctly spelled
+- **Text placement:** Strategic positioning for maximum impact
+- **Visual hierarchy:** Clear emphasis on key messages and CTA
+
+${koreanTextInstruction}
+
+Aspect: ${aspectRatio}. Output: Single photorealistic ad image. No HTML.`)
+            : multiCount >= 2 && !parsedRequests
+            ? Array(multiCount).fill(null).map((_, i) => {
+                // parseMultiRequests가 실패했지만 multiCount는 있음 → Gemini가 전체를 분석해서 N개로 나눠 인식하도록
+                return `[MANDATORY] Create a premium Korean web advertisement as a SINGLE high-quality photorealistic image.
+
+This is creative ${i + 1} of ${multiCount}. The user requested ${multiCount} different creatives in one message.
+
+## Your Task:
+Analyze the full request below and identify creative ${i + 1} of ${multiCount}. The request may be structured as:
+- "소재 1", "소재 2", "이미지 1", "시안 1", "디자인 1" (numbered sections)
+- Numbered sections: "1. [title]", "2. [title]", "3. [title]", "4. [title]"
+- Sections separated by large line breaks or markdown headers (###, ##)
+- Different visual concepts described sequentially
+
+Extract the part that corresponds to creative ${i + 1} and create a design based ONLY on that part. Each creative should have a DIFFERENT concept, visual, and copy.
+
+=== FULL REQUEST (analyze and extract creative ${i + 1} of ${multiCount}) ===
+${effectivePrompt}
+=== END REQUEST ===
+
+## Image Quality Requirements:
+- **Photorealistic quality:** High-resolution, professional-grade
+- **Composition:** Balanced layout with clear focal points
+- **Lighting:** Professional lighting enhancing mood and readability
+- **Color grading:** Premium, cohesive palette matching brand identity
+- **Typography:** All Korean (한글) text rendered EXACTLY as written — sharp, legible, correctly spelled
+- **Text placement:** Strategic positioning for maximum impact
+- **Visual hierarchy:** Clear emphasis on key messages and CTA
+
+${koreanTextInstruction}
+
+Aspect: ${aspectRatio}. Output: Single photorealistic ad image. No HTML.`;
+              })
             : Array(count).fill(null).map((_, i) => count > 1
               ? imgPrompt + `\n\nIMPORTANT: This is variation ${i + 1} of ${count}. ALL ${count} images must have the SAME content (same offer, same text, same product). Only vary: layout, color scheme, visual style. ${variationHints[i] || `Variation ${i + 1} style.`}`
               : imgPrompt);
